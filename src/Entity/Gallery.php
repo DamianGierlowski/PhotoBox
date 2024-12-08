@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\GalleryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GalleryRepository::class)]
@@ -19,6 +22,20 @@ class Gallery
     #[ORM\ManyToOne(inversedBy: 'galleries')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Assigment $assigment = null;
+
+    /**
+     * @var Collection<int, File>
+     */
+    #[ORM\OneToMany(targetEntity: File::class, mappedBy: 'Gallery')]
+    private Collection $files;
+
+    #[ORM\Column(type: Types::GUID)]
+    private ?string $guid = null;
+
+    public function __construct()
+    {
+        $this->files = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -45,6 +62,48 @@ class Gallery
     public function setAssigment(?Assigment $assigment): static
     {
         $this->assigment = $assigment;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, File>
+     */
+    public function getFiles(): Collection
+    {
+        return $this->files;
+    }
+
+    public function addFile(File $file): static
+    {
+        if (!$this->files->contains($file)) {
+            $this->files->add($file);
+            $file->setGallery($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFile(File $file): static
+    {
+        if ($this->files->removeElement($file)) {
+            // set the owning side to null (unless already changed)
+            if ($file->getGallery() === $this) {
+                $file->setGallery(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getGuid(): ?string
+    {
+        return $this->guid;
+    }
+
+    public function setGuid(string $guid): static
+    {
+        $this->guid = $guid;
 
         return $this;
     }

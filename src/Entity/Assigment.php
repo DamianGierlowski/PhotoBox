@@ -32,6 +32,9 @@ class Assigment
     #[ORM\OneToMany(targetEntity: Gallery::class, mappedBy: 'assigment')]
     private Collection $galleries;
 
+    #[ORM\Column(type: Types::GUID)]
+    private ?string $guid = null;
+
     public function __construct()
     {
         $this->galleries = new ArrayCollection();
@@ -104,6 +107,18 @@ class Assigment
                 $gallery->setAssigment(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getGuid(): ?string
+    {
+        return $this->guid;
+    }
+
+    public function setGuid(string $guid): static
+    {
+        $this->guid = $guid;
 
         return $this;
     }

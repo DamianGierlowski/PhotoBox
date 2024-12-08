@@ -1,0 +1,8 @@
+assigment:
+  title_add:
+  desc_add:
+  form:
+    title: Title
+    date: Date
+    submit_new: Add
+    submit_edit: Edit

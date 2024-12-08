@@ -5,10 +5,8 @@ namespace App\Repository;
 use App\Entity\Assigment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * @extends ServiceEntityRepository<Assigment>
- */
 class AssigmentRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,28 +14,13 @@ class AssigmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Assigment::class);
     }
 
-    //    /**
-    //     * @return Assigment[] Returns an array of Assigment objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+   public function findAllForUser(UserInterface $user): array
+   {
+        return $this->findBy(['user' => $user]);
+   }
 
-    //    public function findOneBySomeField($value): ?Assigment
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+   public function findOneByGuidForUser(string $guid, UserInterface $user): ?Assigment
+   {
+       return $this->findOneBy(['guid' => $guid, 'user' => $user]);
+   }
 }

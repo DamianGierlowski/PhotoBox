@@ -9,6 +9,6 @@ class GuidFactory
 {
     static public function generate(): string
     {
-        return strtoupper(Uuid::v6());
+        return strtoupper(Uuid::v4());
     }
 }

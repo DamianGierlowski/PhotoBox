@@ -23,14 +23,15 @@ class Gallery
     #[ORM\JoinColumn(nullable: false)]
     private ?Assigment $assigment = null;
 
-    /**
-     * @var Collection<int, File>
-     */
-    #[ORM\OneToMany(targetEntity: File::class, mappedBy: 'Gallery')]
-    private Collection $files;
 
     #[ORM\Column(type: Types::GUID)]
     private ?string $guid = null;
+
+    /**
+     * @var Collection<int, File>
+     */
+    #[ORM\ManyToMany(targetEntity: File::class)]
+    private Collection $files;
 
     public function __construct()
     {
@@ -66,6 +67,18 @@ class Gallery
         return $this;
     }
 
+    public function getGuid(): ?string
+    {
+        return $this->guid;
+    }
+
+    public function setGuid(string $guid): static
+    {
+        $this->guid = $guid;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, File>
      */
@@ -78,7 +91,6 @@ class Gallery
     {
         if (!$this->files->contains($file)) {
             $this->files->add($file);
-            $file->setGallery($this);
         }
 
         return $this;
@@ -86,24 +98,7 @@ class Gallery
 
     public function removeFile(File $file): static
     {
-        if ($this->files->removeElement($file)) {
-            // set the owning side to null (unless already changed)
-            if ($file->getGallery() === $this) {
-                $file->setGallery(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getGuid(): ?string
-    {
-        return $this->guid;
-    }
-
-    public function setGuid(string $guid): static
-    {
-        $this->guid = $guid;
+        $this->files->removeElement($file);
 
         return $this;
     }

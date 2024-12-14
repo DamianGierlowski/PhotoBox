@@ -3,7 +3,7 @@
 namespace App\Service\Factory;
 
 use App\Entity\File;
-use App\Entity\Gallery;
+use App\Util\GuidFactory;
 use Doctrine\ORM\EntityManagerInterface;
 
 class FileFactory
@@ -13,14 +13,14 @@ class FileFactory
     ) {
     }
 
-    public function makeNewFile(string $fileName, string $path, string $mimeType, int $size, Gallery $gallery)
+    public function makeNewFile(string $fileName, string $path, string $mimeType, int $size, string $guid): File
     {
         $file = new File();
-        $file->setFileName($fileName)
+        $file->setName($fileName)
             ->setPath($path)
             ->setMimeType($mimeType)
             ->setSize($size)
-            ->setGallery($gallery)
+            ->setGuid($guid)
         ;
 
         $this->entityManager->persist($file);

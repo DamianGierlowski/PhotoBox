@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\File;
-use App\Entity\Gallery;
 use App\Service\Factory\FileFactory;
 use App\Util\ArchiveClient;
 use App\Util\GuidFactory;
@@ -18,23 +17,31 @@ class FileService
     ) {
     }
 
-    public function uploadFiles(array $files, Gallery $gallery): array
+    public function uploadFiles(array $files, string $keyBase): array
     {
         $result = [];
+        /** @var UploadedFile $file */
         foreach ($files as $file) {
-          $result[] = $this->uploadSingleFile($file, $gallery);
+          $result[] = $this->uploadSingleFile($file, $keyBase);
         }
 
         return $result;
     }
 
-    public function uploadSingleFile(UploadedFile $file, Gallery $gallery): File
+    public function uploadSingleFile(UploadedFile $file, string $keyBase): File
     {
         $fileContent = file_get_contents($file->getPathname());
         $fileMimeType = $file->getMimeType();
-        $key = $gallery->getGuid() . '/' . GuidFactory::generate();
+
+        $guid = GuidFactory::generate();
+        $key = $keyBase . '/' . $guid;
         $this->archiveClient->uploadFile($key, $fileContent, $fileMimeType);
 
-        return $this->fileFactory->makeNewFile($file->getClientOriginalPath(), $key, $fileMimeType, $file->getSize(), $gallery);
+        return $this->fileFactory->makeNewFile($file->getClientOriginalPath(), $key, $fileMimeType, $file->getSize(), $guid);
+    }
+
+    public function removeFile(File $file): void
+    {
+        $this->archiveClient->deleteFile($file->getPath());
     }
 }

@@ -4,7 +4,6 @@
 
 {% block body %}
 
-<div class="flex-1 bg-gray-100 flex items-center justify-center">
     <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl mx-auto">
         <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
             <div class="text-green-600">
@@ -22,7 +21,6 @@
 
         <div class="mt-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
 
-{#            <p class="text-sm font-semibold text-gray-600"></p>#}
             {{ form_start(form, {'attr': {'class': 'mt-4 space-y-4'}}) }}
             <form class="mt-4 space-y-4">
                 <div>
@@ -40,5 +38,4 @@
             {{ form_end(form) }}
         </div>
     </div>
-</div>
 {% endblock %}

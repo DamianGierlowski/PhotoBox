@@ -6,6 +6,7 @@ use App\Entity\Assigment;
 use App\Form\Assigment1Type;
 use App\Form\AssigmentType;
 use App\Repository\AssigmentRepository;
+use App\Repository\GalleryRepository;
 use App\Util\GuidFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,6 +20,7 @@ final class AssigmentController extends AbstractController
     #[Route(name: 'app_assigment_index', methods: ['GET'])]
     public function index(AssigmentRepository $assigmentRepository): Response
     {
+
         return $this->render('assigment/index.html.twig', [
             'assigments' => $assigmentRepository->findAll(),
         ]);
@@ -47,11 +49,11 @@ final class AssigmentController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_assigment_show', methods: ['GET'])]
-    public function show(Assigment $assigment): Response
+    public function show(Assigment $assigment, GalleryRepository $galleryRepository): Response
     {
         return $this->render('assigment/show.html.twig', [
             'assigment' => $assigment,
-            'galleries' => $assigment->getGalleries(),
+            'galleries' => $galleryRepository->findBy(['assigment' => $assigment, 'deleted' => false]),
         ]);
     }
 

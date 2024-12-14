@@ -3,12 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\GalleryRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GalleryRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Gallery
 {
     #[ORM\Id]
@@ -32,6 +34,12 @@ class Gallery
      */
     #[ORM\ManyToMany(targetEntity: File::class)]
     private Collection $files;
+
+    #[ORM\Column]
+    private ?bool $deleted = false;
+
+    #[ORM\Column(nullable: true)]
+    private ?DateTimeImmutable $deletedAt = null;
 
     public function __construct()
     {
@@ -101,5 +109,37 @@ class Gallery
         $this->files->removeElement($file);
 
         return $this;
+    }
+
+    public function isDeleted(): ?bool
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(bool $deleted): static
+    {
+        $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    public function getDeletedAt(): ?DateTimeImmutable
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?DateTimeImmutable $deletedAt): static
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    #[ORM\PreUpdate]
+    public function onPreUpdate(): void
+    {
+        if ($this->deleted && $this->deletedAt === null) {
+            $this->deletedAt = new DateTimeImmutable();
+        }
     }
 }

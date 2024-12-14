@@ -45,8 +45,17 @@
 
 {#        {% include 'left_bar.html.twig' %}#}
 
+
+
+
+
+        {# Main Content Section #}
+        <div class="flex-1 bg-gray-100 flex flex-col items-center justify-center">
+            {{ include('flash.html.twig') }}
             {% block body %}
             {% endblock %}
+        </div>
+
 
 
     </div>

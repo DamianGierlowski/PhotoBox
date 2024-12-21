@@ -87,7 +87,7 @@ final class GalleryController extends AbstractController
         $form = $this->createForm(UploadGalleryFilesType::class, $gallery);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
             $uploadService->handleUploadRequest($form, $gallery);
 
             return $this->redirectToRoute('app_gallery_show', ['id' => $gallery->getId()], Response::HTTP_SEE_OTHER);

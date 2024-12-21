@@ -38,6 +38,9 @@ class File
     #[ORM\Column(nullable: true)]
     private ?DateTimeImmutable $deletedAt = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $thumbnailPath = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -133,5 +136,17 @@ class File
         if ($this->deleted && $this->deletedAt === null) {
             $this->deletedAt = new DateTimeImmutable();
         }
+    }
+
+    public function getThumbnailPath(): ?string
+    {
+        return $this->thumbnailPath;
+    }
+
+    public function setThumbnailPath(string $thumbnailPath): static
+    {
+        $this->thumbnailPath = $thumbnailPath;
+
+        return $this;
     }
 }

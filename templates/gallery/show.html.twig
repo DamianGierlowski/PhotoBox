@@ -33,6 +33,8 @@
                 <h2 class="text-lg font-semibold text-gray-700">Files:</h2>
                 {% for file in files %}
                     <p class="text-gray-900 mb-4">{{ file.name }}</p>
+                    <img src="{{ archive_public_url(file.thumbnailPath) }}" alt="">
+
                     <a href="{{ path('app_gallery_file_delete', {'id': gallery.id, 'guid': file.guid}) }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"/></svg>
                 </a>

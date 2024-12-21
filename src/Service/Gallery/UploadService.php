@@ -7,10 +7,6 @@ use App\Repository\FileRepository;
 use App\Service\FileService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\Request;
-use function Symfony\Component\Translation\t;
-
 class UploadService
 {
 

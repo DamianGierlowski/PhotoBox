@@ -10,7 +10,7 @@ when@dev:
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
                 level: debug
                 channels: ["!event"]
-            # uncomment to get logging in your browser
+            # uncomment to get logging in your browseru
             # you may have to allow bigger header sizes in your Web server configuration
             #firephp:
             #    type: firephp

@@ -4,14 +4,21 @@ namespace App\Util;
 
 use Aws\Exception\AwsException;
 use Aws\S3\S3Client;
+use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 class ArchiveClient
 {
     private S3Client $s3Client;
     private string $bucketName;
 
-    public function __construct(string $endpoint, string $accessKey, string $secretKey, string $bucketName)
-    {
+    public function __construct(
+        private LoggerInterface $archiveLogger,
+        string $endpoint,
+        string $accessKey,
+        string $secretKey,
+        string $bucketName
+    ) {
         $this->bucketName = $bucketName;
 
         $this->s3Client = new S3Client([
@@ -36,7 +43,12 @@ class ArchiveClient
                 'ContentType' => $mimeType,
             ]);
         } catch (AwsException $e) {
-            throw new \RuntimeException('Error uploading file: ' . $e->getMessage());
+            $this->archiveLogger->error('Error uploading', [
+                'exception' => $e->getMessage(),
+                'key' => $key,
+            ]);
+
+            throw new RuntimeException('Error uploading file: ' . $e->getMessage());
         }
     }
 
@@ -53,7 +65,13 @@ class ArchiveClient
                 'Key'    => $key,
             ]);
         } catch (AwsException $e) {
-            throw new \RuntimeException('Error deleting file: ' . $e->getMessage());
+            $this->archiveLogger->error('Error uploading', [
+                'exception' => $e->getMessage(),
+                'key' => $key,
+            ]);
+
+
+            throw new RuntimeException('Error deleting file: ' . $e->getMessage());
         }
     }
 

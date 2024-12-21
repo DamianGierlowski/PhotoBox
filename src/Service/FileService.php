@@ -6,10 +6,15 @@ use App\Entity\File;
 use App\Service\Factory\FileFactory;
 use App\Util\ArchiveClient;
 use App\Util\GuidFactory;
+use Imagine\Gd\Imagine;
+use Imagine\Image\Box;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileService
 {
+
+    private const ORIGINAL_CATALOG = 'originals';
+    private const THUMBNAIL_CATAOLG = 'thumbnails';
 
     public function __construct(
         private ArchiveClient $archiveClient,
@@ -31,17 +36,35 @@ class FileService
     public function uploadSingleFile(UploadedFile $file, string $keyBase): File
     {
         $fileContent = file_get_contents($file->getPathname());
+
+        $thumbnailPath = '/var/tmp/' . $file->getClientOriginalPath();
+
+        $fileContent =  $this->createThumbnail($fileContent, $thumbnailPath, 200, 200);
         $fileMimeType = $file->getMimeType();
 
         $guid = GuidFactory::generate();
-        $key = $keyBase . '/' . $guid;
-        $this->archiveClient->uploadFile($key, $fileContent, $fileMimeType);
+        $keyOriginal = $keyBase . '/' . self::ORIGINAL_CATALOG . '/' . $guid;
+        $keyThumbnail = $keyBase . '/' . self::THUMBNAIL_CATAOLG . '/' . $guid;
 
-        return $this->fileFactory->makeNewFile($file->getClientOriginalPath(), $key, $fileMimeType, $file->getSize(), $guid);
+        $this->archiveClient->uploadFile($keyOriginal, $fileContent, $fileMimeType);
+        $this->archiveClient->uploadFile($keyThumbnail, $fileContent, $fileMimeType);
+
+        return $this->fileFactory->makeNewFile($file->getClientOriginalPath(), $keyOriginal, $keyThumbnail, $fileMimeType, $file->getSize(), $guid);
     }
 
     public function removeFile(File $file): void
     {
         $this->archiveClient->deleteFile($file->getPath());
+    }
+
+    private function createThumbnail(string $originalPath, string $thumbnailPath, int $width, int $height): string
+    {
+        $imagine = new Imagine();
+        $imagine
+            ->load($originalPath)
+            ->thumbnail(new Box($width, $height))
+            ->save($thumbnailPath, ['quality' => 80]);
+
+        return file_get_contents($thumbnailPath);
     }
 }

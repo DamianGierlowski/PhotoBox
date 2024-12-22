@@ -7,7 +7,8 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Image;
+use Symfony\Component\Validator\Constraints\All;
+use Symfony\Component\Validator\Constraints\File;
 
 class UploadGalleryFilesType extends AbstractType
 {
@@ -23,18 +24,20 @@ class UploadGalleryFilesType extends AbstractType
                     'accept' => "image/*"
                 ],
                 'constraints' => [
-                    new Image(
-                        [
-                            'maxSize' => '25M',
-                            'mimeTypes' => [
-                                'image/jpeg',
-                                'image/png',
-                                'application/pdf',
-                            ],
-                            'mimeTypesMessage' => 'Please upload a valid file (JPEG, PNG, or PDF).',
+                    new All([
+                        'constraints' => [
+                            new File(
+                                ['maxSize' => '25M',
+                                    'mimeTypes' => [
+                                        'image/jpeg',
+                                        'image/png',
+                                        'application/pdf',
+                                    ],
+                                    'mimeTypesMessage' => 'Please upload a valid file (JPEG, PNG, or PDF).',
+                                ],)
                         ],
+                    ]),
 
-                    )
                 ]
             ])
             ->add('submit', SubmitType::class)

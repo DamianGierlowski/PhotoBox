@@ -2,6 +2,7 @@
 
 namespace App\Service\Gallery;
 
+use App\Entity\File;
 use App\Entity\Gallery;
 use App\Repository\FileRepository;
 use App\Service\FileService;
@@ -33,9 +34,8 @@ class UploadService
             $this->entityManager->flush();
     }
 
-    public function handleDeleteRequest(Gallery $gallery, string $fileGuid): void
+    public function handleDeleteRequest(Gallery $gallery, File $file): void
     {
-        $file = $this->fileRepository->findOneBy(['guid' => $fileGuid]);
         $this->fileService->removeFile($file);
 
         $gallery->removeFile($file);

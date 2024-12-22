@@ -6,3 +6,9 @@ assigment:
     date: Date
     submit_new: Add
     submit_edit: Edit
+
+header:
+  logout: 'Logout'
+sidebar:
+  dashboard: 'Dashboard'
+  assigments: 'Assigments'

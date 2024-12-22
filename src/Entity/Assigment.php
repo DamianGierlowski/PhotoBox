@@ -32,7 +32,7 @@ class Assigment
     #[ORM\OneToMany(targetEntity: Gallery::class, mappedBy: 'assigment')]
     private Collection $galleries;
 
-    #[ORM\Column(type: Types::GUID)]
+    #[ORM\Column(type: Types::GUID, unique: true)]
     private ?string $guid = null;
 
     public function __construct()

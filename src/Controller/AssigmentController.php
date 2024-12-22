@@ -3,16 +3,20 @@
 namespace App\Controller;
 
 use App\Entity\Assigment;
-use App\Form\Assigment1Type;
+
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use App\Form\AssigmentType;
 use App\Repository\AssigmentRepository;
 use App\Repository\GalleryRepository;
+use App\UniqueNameInterface\PermissionInterface;
 use App\Util\GuidFactory;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/assigment')]
 final class AssigmentController extends AbstractController
@@ -22,7 +26,7 @@ final class AssigmentController extends AbstractController
     {
 
         return $this->render('assigment/index.html.twig', [
-            'assigments' => $assigmentRepository->findAll(),
+            'assigments' => $assigmentRepository->findAllForUser($this->getUser()),
         ]);
     }
 
@@ -48,18 +52,29 @@ final class AssigmentController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_assigment_show', methods: ['GET'])]
-    public function show(Assigment $assigment, GalleryRepository $galleryRepository): Response
+    #[Route('/{guid}', name: 'app_assigment_show', methods: ['GET'])]
+    public function show(
+        #[MapEntity(mapping: ['guid' => 'guid'])]
+        Assigment $assigment,
+        GalleryRepository $galleryRepository): Response
     {
+        $this->isGranted(PermissionInterface::OWNER, $assigment);
+
         return $this->render('assigment/show.html.twig', [
             'assigment' => $assigment,
             'galleries' => $galleryRepository->findBy(['assigment' => $assigment, 'deleted' => false]),
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_assigment_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Assigment $assigment, EntityManagerInterface $entityManager): Response
+    #[Route('/{guid}/edit', name: 'app_assigment_edit', methods: ['GET', 'POST'])]
+    public function edit(
+        Request $request,
+        #[MapEntity(mapping: ['guid' => 'guid'])]
+        Assigment $assigment,
+        EntityManagerInterface $entityManager): Response
     {
+        $this->isGranted(PermissionInterface::OWNER, $assigment);
+
         $form = $this->createForm(AssigmentType::class, $assigment);
         $form->handleRequest($request);
 
@@ -75,9 +90,15 @@ final class AssigmentController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_assigment_delete', methods: ['POST'])]
-    public function delete(Request $request, Assigment $assigment, EntityManagerInterface $entityManager): Response
+    #[Route('/{guid}', name: 'app_assigment_delete', methods: ['POST'])]
+    public function delete(
+        Request $request,
+        #[MapEntity(mapping: ['guid' => 'guid'])]
+        Assigment $assigment,
+        EntityManagerInterface $entityManager): Response
     {
+        $this->isGranted(PermissionInterface::OWNER, $assigment);
+
         if ($this->isCsrfTokenValid('delete'.$assigment->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($assigment);
             $entityManager->flush();

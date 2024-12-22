@@ -1,0 +1,14 @@
+<!-- Sidebar -->
+<aside class="bg-white shadow rounded-lg p-4 border border-gray-200 w-64">
+    <div class="text-lg font-bold text-gray-700 border-b border-gray-200 pb-2">Menu</div>
+    <nav class="mt-4">
+        <ul class="space-y-2">
+            <li>
+                <a href="{{ path('app_dashboard') }}" class="block px-4 py-2 rounded hover:bg-gray-50 text-gray-600">{{ 'sidebar.dashboard'|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('app_assigment_index') }}" class="block px-4 py-2 rounded hover:bg-gray-50 text-gray-600">{{ 'sidebar.assigments'|trans }}</a>
+            </li>
+        </ul>
+    </nav>
+</aside>

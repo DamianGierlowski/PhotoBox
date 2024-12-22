@@ -55,10 +55,10 @@
                         <td class="px-6 py-4 border-b border-gray-200">{{ gallery.name }}</td>
 {#                        <td class="px-6 py-4 border-b border-gray-200">{{ assigment.date ? assigment.date|date('Y-m-d H:i:s') : '' }}</td>#}
                         <td class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-                            <a href="{{ path('app_gallery_show', {'id': gallery.id}) }}">
+                            <a href="{{ path('app_gallery_show', {'guid': gallery.guid}) }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24"><path fill="currentColor" d="M12 9a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5a5 5 0 0 1 5-5a5 5 0 0 1 5 5a5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5"/></svg>
                             </a>
-                            <a href="{{ path('app_gallery_edit', {'id': gallery.id}) }}">
+                            <a href="{{ path('app_gallery_edit', {'guid': gallery.guid}) }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="1.5  em" height="1.5em" viewBox="0 0 24 24"><path fill="currentColor" d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83l3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75z"/></svg>
                             </a>
                             {{ include('gallery/_delete_form.html.twig') }}

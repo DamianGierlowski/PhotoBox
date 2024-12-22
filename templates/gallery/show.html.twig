@@ -6,12 +6,12 @@
         <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl mx-auto">
             <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
                 <div class="text-green-600">
-                    <a href="{{ path('app_assigment_show', {'id': assigment.id}) }}">
+                    <a href="{{ path('app_assigment_show', {'guid': assigment.guid}) }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="20" stroke-dashoffset="20" d="M21 12h-17.5"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.2s" values="20;0"/></path><path stroke-dasharray="12" stroke-dashoffset="12" d="M3 12l7 7M3 12l7 -7"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.2s" dur="0.2s" values="12;0"/></path></g></svg>
                     </a>
                 </div>
                 <div class="text-green-600">
-                    <a href="{{ path('app_gallery_upload', {'id': gallery.id}) }}">
+                    <a href="{{ path('app_gallery_upload', {'guid': gallery.guid}) }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"/></svg>
                     </a>
                 </div>
@@ -35,7 +35,7 @@
                     <p class="text-gray-900 mb-4">{{ file.name }}</p>
                     <img src="{{ archive_public_url(file.thumbnailPath) }}" alt="">
 
-                    <a href="{{ path('app_gallery_file_delete', {'id': gallery.id, 'guid': file.guid}) }}">
+                    <a href="{{ path('app_gallery_file_delete', {'guid': gallery.guid, 'guid_file': file.guid}) }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"/></svg>
                 </a>
                 {% endfor %}

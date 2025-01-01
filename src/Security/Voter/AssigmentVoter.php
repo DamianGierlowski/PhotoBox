@@ -2,7 +2,7 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Assigment;
+use App\Entity\Commission;
 use App\UniqueNameInterface\PermissionInterface;
 use Override;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -19,7 +19,7 @@ class AssigmentVoter extends Voter
     #[Override]
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, self::SUPPORTED_ATTRIBUTES) && $subject instanceof Assigment;
+        return in_array($attribute, self::SUPPORTED_ATTRIBUTES) && $subject instanceof Commission;
     }
 
     #[Override]
@@ -37,7 +37,7 @@ class AssigmentVoter extends Voter
         };
     }
 
-    protected function voteOnOwner(Assigment $subject, UserInterface $user): bool
+    protected function voteOnOwner(Commission $subject, UserInterface $user): bool
     {
         if ($subject->getUser() === $user) {
             return true;

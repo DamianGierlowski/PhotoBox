@@ -14,10 +14,10 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/gallery')]
 class FileController extends AbstractController
 {
-    #[Route('{guid}/file/delete/{guid_file}', name: 'app_gallery_file_delete')]
+    #[Route('{gallery_guid}/file/delete/{guid_file}', name: 'app_gallery_file_delete')]
     public function delete(
         Request $request,
-        #[MapEntity(mapping: ['guid' => 'guid'])]
+        #[MapEntity(mapping: ['gallery_guid' => 'guid'])]
         Gallery $gallery,
         #[MapEntity(mapping: ['guid_file' => 'guid'])]
         File $file,
@@ -27,6 +27,6 @@ class FileController extends AbstractController
 
         $uploadService->handleDeleteRequest($gallery, $file);
 
-        return $this->redirectToRoute('app_gallery_show', ['id' => $gallery->getId()]);
+        return $this->redirectToRoute('app_gallery_show', ['guid' => $gallery->getGuid()]);
     }
 }

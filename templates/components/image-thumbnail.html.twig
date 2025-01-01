@@ -1,0 +1,46 @@
+<div class="relative group {{ is_vertical ? 'row-span-2' : '' }}">
+    <img src="{{ archive_public_url(thumbnail_url) }}" alt="{{ image_alt }}" class="w-full h-full object-cover rounded-lg shadow-md">
+    <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-opacity duration-300 rounded-lg flex items-end justify-between p-4">
+        <button onclick="showFullScreenImage('{{ archive_public_url(image_url) }}')" class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            {{ ux_icon('mdi:eye', {size: 24, class: 'w-6 h-6'}) }}
+        </button>
+        <div class="flex space-x-2">
+            <a href="{{ path(cart_route, cart_params) }}" class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {{ ux_icon('lucide:aperture', {size: 24, class: 'w-6 h-6'}) }}
+            </a>
+            <a href="{{ path(favorite_route, favorite_params) }}" class="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {{ ux_icon('lucide:aperture', {size: 24, class: 'w-6 h-6'}) }}
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showFullScreenImage(imageUrl) {
+        const fullScreenDiv = document.createElement('div');
+        fullScreenDiv.style.position = 'fixed';
+        fullScreenDiv.style.top = '0';
+        fullScreenDiv.style.left = '0';
+        fullScreenDiv.style.width = '100%';
+        fullScreenDiv.style.height = '100%';
+        fullScreenDiv.style.backgroundColor = 'rgba(0,0,0,0.9)';
+        fullScreenDiv.style.display = 'flex';
+        fullScreenDiv.style.alignItems = 'center';
+        fullScreenDiv.style.justifyContent = 'center';
+        fullScreenDiv.style.zIndex = '9999';
+
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.style.maxWidth = '90%';
+        img.style.maxHeight = '90%';
+        img.style.objectFit = 'contain';
+
+        fullScreenDiv.appendChild(img);
+
+        fullScreenDiv.addEventListener('click', () => {
+            document.body.removeChild(fullScreenDiv);
+        });
+
+        document.body.appendChild(fullScreenDiv);
+    }
+</script>

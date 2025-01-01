@@ -1,0 +1,11 @@
+<div class="bg-white shadow rounded-lg p-4 sm:p-6 mb-4 mx-4 my-4">
+    <h2 class="text-xl sm:text-2xl font-semibold text-gray-900 mb-4">
+        {{ block_title|default('Content Block') }}
+    </h2>
+    <div class="space-y-4">
+        {% block content %}
+            {# Content will be injected here #}
+        {% endblock %}
+    </div>
+</div>
+

@@ -39,7 +39,7 @@ class GalleryVoter extends Voter
 
     protected function voteOnOwner(Gallery $subject, UserInterface $user): bool
     {
-        if ($subject->getAssigment()->getUser() === $user) {
+        if ($subject->getCommission()->getUser() === $user) {
             return true;
         }
 

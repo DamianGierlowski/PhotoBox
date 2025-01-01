@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gallery{% endblock %}
+
+{% block body %}
+    <div>
+        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Image Thumbnails</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            {% for thumbnail in image_thumbnails %}
+                {% include 'components/image-thumbnail.html.twig' with thumbnail %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

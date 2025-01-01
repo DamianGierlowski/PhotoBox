@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Service\Api\Assigment;
 
-use App\Entity\Assigment;
-use App\Repository\AssigmentRepository;
+use App\Entity\Commission;
+use App\Repository\CommissionRepository;
 use App\Util\GuidFactory;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class AssigmentService
 {
     public function __construct(
-       private AssigmentRepository $assigmentRepository,
+       private CommissionRepository   $assigmentRepository,
        private EntityManagerInterface $entityManager,
     ) {
     }
@@ -29,7 +29,7 @@ class AssigmentService
     {
          $data = (array) json_decode($request->getContent());
 
-         $assigment = new Assigment();
+         $assigment = new Commission();
          $assigment->setUser($user)
              ->setTitle($data['title'])
              ->setDate(new \DateTime($data['date']))

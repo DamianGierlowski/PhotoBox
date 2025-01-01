@@ -20,12 +20,12 @@ final class Version20241201090807 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE assigment ADD guid CHAR(36) NOT NULL COMMENT \'(DC2Type:guid)\'');
+        $this->addSql('ALTER TABLE commission ADD guid CHAR(36) NOT NULL COMMENT \'(DC2Type:guid)\'');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE assigment DROP guid');
+        $this->addSql('ALTER TABLE commission DROP guid');
     }
 }

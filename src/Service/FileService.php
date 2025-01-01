@@ -39,7 +39,7 @@ class FileService
 
         $thumbnailPath = '/var/tmp/' . $file->getClientOriginalPath();
 
-        $fileContent =  $this->createThumbnail($fileContent, $thumbnailPath, 200, 200);
+        $fileThumbnailContent =  $this->createThumbnail($fileContent, $thumbnailPath, 200, 200);
         $fileMimeType = $file->getMimeType();
 
         $guid = GuidFactory::generate();
@@ -47,7 +47,7 @@ class FileService
         $keyThumbnail = $keyBase . '/' . self::THUMBNAIL_CATAOLG . '/' . $guid;
 
         $this->archiveClient->uploadFile($keyOriginal, $fileContent, $fileMimeType);
-        $this->archiveClient->uploadFile($keyThumbnail, $fileContent, $fileMimeType);
+        $this->archiveClient->uploadFile($keyThumbnail, $fileThumbnailContent, $fileMimeType);
 
         return $this->fileFactory->makeNewFile($file->getClientOriginalPath(), $keyOriginal, $keyThumbnail, $fileMimeType, $file->getSize(), $guid);
     }

@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\AssigmentRepository;
+use App\Repository\CommissionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: AssigmentRepository::class)]
-class Assigment
+#[ORM\Entity(repositoryClass: CommissionRepository::class)]
+class Commission
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -22,14 +22,14 @@ class Assigment
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\ManyToOne(inversedBy: 'assigment')]
+    #[ORM\ManyToOne(inversedBy: 'commission')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
     /**
      * @var Collection<int, Gallery>
      */
-    #[ORM\OneToMany(targetEntity: Gallery::class, mappedBy: 'assigment')]
+    #[ORM\OneToMany(targetEntity: Gallery::class, mappedBy: 'commission')]
     private Collection $galleries;
 
     #[ORM\Column(type: Types::GUID, unique: true)]
@@ -93,7 +93,7 @@ class Assigment
     {
         if (!$this->galleries->contains($gallery)) {
             $this->galleries->add($gallery);
-            $gallery->setAssigment($this);
+            $gallery->setCommission($this);
         }
 
         return $this;
@@ -103,8 +103,8 @@ class Assigment
     {
         if ($this->galleries->removeElement($gallery)) {
             // set the owning side to null (unless already changed)
-            if ($gallery->getAssigment() === $this) {
-                $gallery->setAssigment(null);
+            if ($gallery->getCommission() === $this) {
+                $gallery->setCommission(null);
             }
         }
 

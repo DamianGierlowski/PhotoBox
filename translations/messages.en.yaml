@@ -1,14 +1,17 @@
-assigment:
-  title_add:
-  desc_add:
-  form:
-    title: Title
-    date: Date
-    submit_new: Add
-    submit_edit: Edit
-
+title: PhotoBox
+commission:
+  header_title: Commissions
+  new_title: Create new commission
+  show_title: Commission description
+  gallery_title: Commissions galleries
+  fields:
+    date: 'Commission Date'
+gallery:
+  new_title: Create new gallery
+  show_title: 'Gallery: %title%'
+  upload_title: 'Uploading files to %title%'
 header:
   logout: 'Logout'
 sidebar:
   dashboard: 'Dashboard'
-  assigments: 'Assigments'
+  commission: 'Commissions'

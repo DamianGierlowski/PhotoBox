@@ -39,9 +39,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $guid = null;
 
     /**
-     * @var Collection<int, Assigment>
+     * @var Collection<int, Commission>
      */
-    #[ORM\OneToMany(targetEntity: Assigment::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: Commission::class, mappedBy: 'user')]
     private Collection $assigments;
 
     public function __construct()
@@ -145,14 +145,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Assigment>
+     * @return Collection<int, Commission>
      */
     public function getAssigments(): Collection
     {
         return $this->assigments;
     }
 
-    public function addAssigment(Assigment $assigment): static
+    public function addAssigment(Commission $assigment): static
     {
         if (!$this->assigments->contains($assigment)) {
             $this->assigments->add($assigment);
@@ -162,7 +162,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeAssigment(Assigment $assigment): static
+    public function removeAssigment(Commission $assigment): static
     {
         if ($this->assigments->removeElement($assigment)) {
             // set the owning side to null (unless already changed)

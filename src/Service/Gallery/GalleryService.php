@@ -34,8 +34,4 @@ class GalleryService
         $this->entityManager->flush();
     }
 
-    private function removeFile()
-    {
-
-    }
 }

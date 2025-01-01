@@ -10,14 +10,14 @@ use RuntimeException;
 class ArchiveClient
 {
     private S3Client $s3Client;
-    private string $bucketName;
 
     public function __construct(
         private LoggerInterface $archiveLogger,
         string $endpoint,
         string $accessKey,
         string $secretKey,
-        string $bucketName
+        private string $bucketName,
+        private string $publicUrl,
     ) {
         $this->bucketName = $bucketName;
 
@@ -54,7 +54,9 @@ class ArchiveClient
 
     public function getFileUrl(string $key): string
     {
-        return $this->s3Client->getObjectUrl($this->bucketName, $key);
+
+            return $this->publicUrl . '/' . $this->bucketName . '/' . $key;
+//        return $this->s3Client->getObjectUrl($this->bucketName, $key);
     }
 
     public function deleteFile(string $key): void

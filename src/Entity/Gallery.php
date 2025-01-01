@@ -23,7 +23,7 @@ class Gallery
 
     #[ORM\ManyToOne(inversedBy: 'galleries')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Assigment $assigment = null;
+    private ?Commission $commission = null;
 
 
     #[ORM\Column(type: Types::GUID)]
@@ -63,14 +63,14 @@ class Gallery
         return $this;
     }
 
-    public function getAssigment(): ?Assigment
+    public function getCommission(): ?Commission
     {
-        return $this->assigment;
+        return $this->commission;
     }
 
-    public function setAssigment(?Assigment $assigment): static
+    public function setCommission(?Commission $commission): static
     {
-        $this->assigment = $assigment;
+        $this->commission = $commission;
 
         return $this;
     }

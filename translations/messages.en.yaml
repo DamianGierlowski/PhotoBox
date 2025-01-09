@@ -6,6 +6,7 @@ commission:
   gallery_title: Commissions galleries
   fields:
     date: 'Commission Date'
+    description: 'Description'
 gallery:
   new_title: Create new gallery
   show_title: 'Gallery: %title%'

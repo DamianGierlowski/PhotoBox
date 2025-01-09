@@ -95,11 +95,14 @@ class CommissionRenderService
         $galleries = $commission->getGalleries();
 
         $builderTable->addHeader('name', 'Name');
+        $builderTable->addHeader('public', 'public');
 
         foreach ($galleries as $gallery) {
             $guid = $gallery->getGuid();
             $builderTable->addRowValue($guid, 'guid', $guid);
             $builderTable->addRowValue($guid, 'name', $gallery->getName());
+            $builderTable->addRowValue($guid, 'public', $gallery->isPublic() ? 'Yes' :  'No', $gallery->isPublic() ? 'green' :  'red');
+
         }
 
         $builderTable->addAction('app_gallery_show', ['guid' => 'guid'], 'mdi:eye');

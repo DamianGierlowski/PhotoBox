@@ -41,6 +41,12 @@ class Gallery
     #[ORM\Column(nullable: true)]
     private ?DateTimeImmutable $deletedAt = null;
 
+    #[ORM\Column]
+    private ?bool $public = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
     public function __construct()
     {
         $this->files = new ArrayCollection();
@@ -141,5 +147,29 @@ class Gallery
         if ($this->deleted && $this->deletedAt === null) {
             $this->deletedAt = new DateTimeImmutable();
         }
+    }
+
+    public function isPublic(): ?bool
+    {
+        return $this->public;
+    }
+
+    public function setPublic(bool $public): static
+    {
+        $this->public = $public;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
     }
 }

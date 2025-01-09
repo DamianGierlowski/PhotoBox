@@ -1,14 +1,224 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gallery{% endblock %}
+{% block title %}Image Preview{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .image-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+        .image-item {
+            width: 100%;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <div>
-        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Image Thumbnails</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {% for thumbnail in image_thumbnails %}
-                {% include 'components/image-thumbnail.html.twig' with thumbnail %}
-            {% endfor %}
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8 text-center">Favorites</h1>
+        <div id="image-stack-favorites" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1">
+            <!-- Images will be inserted here -->
         </div>
     </div>
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-8 text-center">Image Preview</h1>
+        <div id="image-stack" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1">
+            <!-- Images will be inserted here -->
+        </div>
+    </div>
+
+    {% if not is_granted('ROLE_GUEST') %}
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
+            <h2 class="text-2xl font-bold mb-4">Welcome to the Gallery</h2>
+            <p class="text-gray-600 mb-6">Please enter your email to access the gallery. This helps us provide a personalized experience.</p>
+
+            <form id="email-login-form" class="space-y-4">
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Enter your email:</label>
+                <div class="mt-1">
+                    <input type="email" id="email" name="email"  class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="you@example.com"/>
+                </div>
+            </div>
+            <div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Enter Gallery
+                </button>
+            </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = document.getElementById('loginModal');
+
+            // Handle form submission
+            document.getElementById('email-login-form').addEventListener('submit', function (e) {
+                e.preventDefault();
+                const email = document.getElementById('email').value;
+
+                // Send login request
+                fetch('/guest/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email }),
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            // Mark user as authenticated in cookies
+                            document.cookie = "authenticated=true; path=/";
+                            modal.style.display = 'none';
+                            location.reload(); // Reload the page to access the gallery
+                        } else {
+                            alert('Login failed. Please try again.');
+                        }
+                    });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const imageStack = document.querySelector('#image-stack');
+            const favoritesStack = document.querySelector('#image-stack-favorites');
+
+            // Initial loading of images and favorites
+            loadImages(imageStack);
+
+            {% if app.user is defined %}
+                loadFavorites(favoritesStack, '', '{{ gallery.guid }}', '{{ app.user ? app.user.username : "" }}');
+            {% endif %}
+        });
+
+        function loadImages(imageStack) {
+            fetch('{{ path('app_preview_data', {'guid': gallery.guid}) }}')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(renderedImages => {
+                    imageStack.innerHTML = renderedImages.join('');
+                })
+                .catch(error => {
+                    console.error('Error fetching images:', error);
+                });
+        }
+
+        function loadFavorites(imageStack, fileGuid, galleryGuid, email) {
+            const bodyData = {
+                fileGuid: fileGuid,
+                galleryGuid: galleryGuid,
+                email: email,
+            };
+
+            $.ajax({
+                url: '/favorites/',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(bodyData),
+                success: function (response) {
+                    imageStack.innerHTML = response.join('');
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching favorites:', error);
+                }
+            });
+        }
+
+        function showFullScreenImage(imageUrl) {
+            const fullScreenDiv = document.createElement('div');
+            fullScreenDiv.style.position = 'fixed';
+            fullScreenDiv.style.top = '0';
+            fullScreenDiv.style.left = '0';
+            fullScreenDiv.style.width = '100%';
+            fullScreenDiv.style.height = '100%';
+            fullScreenDiv.style.backgroundColor = 'rgba(0,0,0,0.9)';
+            fullScreenDiv.style.display = 'flex';
+            fullScreenDiv.style.alignItems = 'center';
+            fullScreenDiv.style.justifyContent = 'center';
+            fullScreenDiv.style.zIndex = '9999';
+
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.style.maxWidth = '90%';
+            img.style.maxHeight = '90%';
+            img.style.objectFit = 'contain';
+
+            fullScreenDiv.appendChild(img);
+
+            fullScreenDiv.addEventListener('click', () => {
+                document.body.removeChild(fullScreenDiv);
+            });
+
+            document.body.appendChild(fullScreenDiv);
+        }
+
+        function addToFavorites(fileGuid, galleryGuid, email) {
+            const bodyData = {
+                fileGuid: fileGuid,
+                galleryGuid: galleryGuid,
+                email: email,
+            };
+
+            $.ajax({
+                url: '/favorites/add',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(bodyData),
+                success: function (response) {
+                    console.log('Added to favorites:', response);
+                    reloadGallery();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error adding to favorites:', xhr.responseText || status);
+                }
+            });
+        }
+
+        function removeFromFavorites(fileGuid, galleryGuid, email) {
+            const bodyData = {
+                fileGuid: fileGuid,
+                galleryGuid: galleryGuid,
+                email: email,
+            };
+
+            $.ajax({
+                url: '/favorites/remove',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(bodyData),
+                success: function (response) {
+                    console.log('Removed from favorites:', response);
+                    reloadGallery();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error removing from favorites:', xhr.responseText || status);
+                }
+            });
+        }
+
+        function reloadGallery() {
+            const imageStack = document.querySelector('#image-stack');
+            const favoritesStack = document.querySelector('#image-stack-favorites');
+
+            loadImages(imageStack);
+            loadFavorites(favoritesStack, '', '{{ gallery.guid }}', '{{ app.user ? app.user.username : ""  }}');
+        }
+    </script>
+{% endblock %}
+

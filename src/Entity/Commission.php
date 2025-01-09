@@ -35,6 +35,9 @@ class Commission
     #[ORM\Column(type: Types::GUID, unique: true)]
     private ?string $guid = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
     public function __construct()
     {
         $this->galleries = new ArrayCollection();
@@ -119,6 +122,18 @@ class Commission
     public function setGuid(string $guid): static
     {
         $this->guid = $guid;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }

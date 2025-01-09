@@ -49,7 +49,7 @@ class AppExtension extends AbstractExtension
             $value = $value[$key];
         }
 
-        return is_array($value) ? $value['value'] : $value;
+        return $value;
     }
 }
 

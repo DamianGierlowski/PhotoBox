@@ -74,7 +74,10 @@ final class CommissionController extends AbstractController
             'commission_title' => $commission->getTitle(),
             'gallery_content_header' => $contentHeaderGalleryData,
             'table_data' => $galleryTable,
-            'entity_data' => ['commission.fields.date' => $commission->getDate()->format('d.m.Y H:i:s')],
+            'entity_data' => [
+                'commission.fields.date' => $commission->getDate()->format('d.m.Y H:i:s'),
+                'commission.fields.description' => $commission->getDescription(),
+            ],
         ]);
     }
 
@@ -96,7 +99,7 @@ final class CommissionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_commissions_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_commission_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('commission/edit.html.twig', [
@@ -120,6 +123,6 @@ final class CommissionController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_assigment_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_commission_index', [], Response::HTTP_SEE_OTHER);
     }
 }

@@ -1,0 +1,23 @@
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="rounded-md p-4 mb-4 {% if label == 'success' %}bg-green-50 text-green-800{% elseif label == 'error' %}bg-red-50 text-red-800{% else %}bg-blue-50 text-blue-800{% endif %}" role="alert">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    {% if label == 'success' %}
+                        {{ ux_icon('lucide:aperture', {size: 24, class: 'h-5 w-5 text-green-400'}) }}
+                    {% elseif label == 'error' %}
+                        {{ ux_icon('lucide:aperture', {size: 24, class: 'h-5 w-5 text-red-400'}) }}
+                    {% else %}
+                        {{ ux_icon('lucide:aperture', {size: 24, class: 'h-5 w-5 text-blue-400'}) }}
+                    {% endif %}
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium">
+                        {{ message }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endfor %}
+

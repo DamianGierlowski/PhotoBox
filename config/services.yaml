@@ -4,21 +4,37 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-
+    uploads_directory: '%kernel.project_dir%/public/uploads'
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.\
 
+    App\Security\GuestUserProvider:
+        public: false
+
+    App\EventListener\EventCookieListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, priority: 10 }
+
+    App\Twig\AppExtension:
+        tags: [ 'twig.extension' ]
+    App\Twig\ArchiveExtension:
+        tags: [ 'twig.extension' ]
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
         exclude:
             - '../src/DependencyInjection/'
-            - '../src/Entity/'
             - '../src/Kernel.php'
-
+    App\Util\ArchiveClient:
+        arguments:
+            $endpoint: '%env(MINIO_ENDPOINT)%'
+            $accessKey: '%env(MINIO_ACCESS_KEY)%'
+            $secretKey: '%env(MINIO_SECRET_KEY)%'
+            $bucketName: '%env(MINIO_BUCKET_NAME)%'
+            $publicUrl: '%env(MINIO_DOMAIN)%'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

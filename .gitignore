@@ -74,4 +74,5 @@
 ###> symfony/asset-mapper ###
 /public/assets/
 /assets/vendor/
+/.idea
 ###< symfony/asset-mapper ###

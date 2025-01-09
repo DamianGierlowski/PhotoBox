@@ -9,11 +9,18 @@ security:
             entity:
                 class: App\Entity\User
                 property: email
+        guest_user_provider:
+            id: App\Security\GuestUserProvider
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        guest:
+            pattern: ^/(preview|guest|favorites)/
+            custom_authenticator: App\Security\GuestAuthenticator
+            provider: guest_user_provider
         main:
+            pattern: ^/(?!favorites/add) # Ignore favorites/add
             lazy: true
             provider: app_user_provider
             custom_authenticator: App\Security\UserAuthenticator
@@ -39,8 +46,10 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+         - { path: ^/dashboard, roles: ROLE_USER }
+#         - { path: ^/gallery/[0-9a-fA-F\-]+/preview/, roles: ROLE_GUEST }
+#         - { path: ^/gallery, roles: ROLE_USER }
+         - { path: ^/commission, roles: ROLE_USER }
 
 when@test:
     security:

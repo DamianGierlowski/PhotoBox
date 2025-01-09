@@ -1,0 +1,26 @@
+<div class="bg-white shadow-sm rounded-lg mb-4 mx-4 my-4">
+    <div class="px-6 py-4">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">{{ title }}</h2>
+        <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+            {% for key, value in data %}
+                <div class="sm:col-span-1">
+                    <dt class="text-sm font-medium text-gray-500">
+                        {{ key|trans }}
+                    </dt>
+                    <dd class="mt-1 text-lg text-gray-900">
+                        {% if value is iterable %}
+                            <ul class="list-disc list-inside">
+                                {% for item in value %}
+                                    <li>{{ item }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            {{ value }}
+                        {% endif %}
+                    </dd>
+                </div>
+            {% endfor %}
+        </dl>
+    </div>
+</div>
+

@@ -1,0 +1,133 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'title'|trans }}{% endblock %}
+
+{% block body %}
+    {% include 'components/content-header.html.twig' with content_header %}
+
+    <div class="max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
+
+        {{ form_start(form, {'attr': {'id': 'uploadForm', 'class': 'space-y-4'}}) }}
+        <div class="flex items-center justify-center w-full">
+            <label for="{{ form.files.vars.id }}" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                    <svg class="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                    <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                    <p class="text-xs text-gray-500">Multiple PDF, Word, Excel, or Image files up to 10MB each</p>
+                </div>
+                {{ form_widget(form.files) }}
+            </label>
+        </div>
+        <div id="fileInfo" class="hidden">
+            <p class="text-sm text-gray-600">Selected files: <span id="fileCount" class="font-semibold"></span></p>
+            <ul id="fileList" class="mt-2 text-sm text-gray-600"></ul>
+        </div>
+        <button type="submit" class="w-full py-2 px-4 bg-teal-500 text-white font-semibold rounded-lg shadow-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-opacity-75 transition-colors duration-300">
+            Upload Files
+        </button>
+        {{ form_end(form) }}
+
+        <div id="uploadStatus" class="mt-4 hidden">
+            <div class="flex items-center">
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="progressBar" class="bg-teal-500 h-2.5 rounded-full" style="width: 0%"></div>
+                </div>
+                <span id="progressPercentage" class="ml-2 text-sm font-medium text-gray-500">0%</span>
+            </div>
+            <p id="statusMessage" class="mt-2 text-sm text-gray-600"></p>
+        </div>
+
+        <div id="uploadResult" class="mt-4 hidden">
+            <h2 class="text-lg font-semibold mb-2">Upload Result</h2>
+            <p id="resultMessage" class="text-sm text-gray-600"></p>
+            <ul id="uploadedFilesList" class="mt-2 text-sm text-gray-600"></ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('uploadForm');
+            const fileInput = document.querySelector('input[type="file"]');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileCount = document.getElementById('fileCount');
+            const fileList = document.getElementById('fileList');
+            const uploadStatus = document.getElementById('uploadStatus');
+            const progressBar = document.getElementById('progressBar');
+            const progressPercentage = document.getElementById('progressPercentage');
+            const statusMessage = document.getElementById('statusMessage');
+            const uploadResult = document.getElementById('uploadResult');
+            const resultMessage = document.getElementById('resultMessage');
+            const uploadedFilesList = document.getElementById('uploadedFilesList');
+
+            fileInput.addEventListener('change', function(e) {
+                if (this.files.length > 0) {
+                    fileCount.textContent = this.files.length;
+                    fileList.innerHTML = '';
+                    for (let i = 0; i < this.files.length; i++) {
+                        const li = document.createElement('li');
+                        li.textContent = this.files[i].name;
+                        fileList.appendChild(li);
+                    }
+                    fileInfo.classList.remove('hidden');
+                } else {
+                    fileInfo.classList.add('hidden');
+                }
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const files = fileInput.files;
+                if (files.length === 0) {
+                    alert('Please select at least one file to upload');
+                    return;
+                }
+
+                const formData = new FormData(form);
+
+                uploadStatus.classList.remove('hidden');
+                uploadResult.classList.add('hidden');
+                statusMessage.textContent = 'Uploading...';
+
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', '{{ path('app_gallery_upload_process', {'guid': gallery.guid}) }}', true);
+
+                xhr.upload.onprogress = function(e) {
+                    if (e.lengthComputable) {
+                        const percentComplete = (e.loaded / e.total) * 100;
+                        progressBar.style.width = percentComplete + '%';
+                        progressPercentage.textContent = Math.round(percentComplete) + '%';
+                    }
+                };
+
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.success) {
+                            resultMessage.textContent = response.message;
+                            uploadedFilesList.innerHTML = '';
+                            response.files.forEach(file => {
+                                const li = document.createElement('li');
+                                li.textContent = `${file.filename} (${file.size} bytes)`;
+                                uploadedFilesList.appendChild(li);
+                            });
+                            statusMessage.textContent = 'Upload completed successfully!';
+                        } else {
+                            resultMessage.textContent = 'Upload failed: ' + response.message;
+                            statusMessage.textContent = 'Upload failed.';
+                        }
+                    } else {
+                        resultMessage.textContent = 'Upload failed. Server returned status: ' + xhr.status;
+                        statusMessage.textContent = 'Upload failed.';
+                    }
+                    uploadResult.classList.remove('hidden');
+                };
+
+                xhr.send(formData);
+            });
+        });
+    </script>
+{% endblock %}
+

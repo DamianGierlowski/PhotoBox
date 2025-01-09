@@ -1,0 +1,42 @@
+<div class="bg-white shadow overflow-hidden sm:rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+        <tr>
+            {% for header in headers %}
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {{ header.label }}
+                </th>
+            {% endfor %}
+            {% if actions is defined %}
+                <th scope="col" class="relative px-6 py-3">
+                    <span class="sr-only">Actions</span>
+                </th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+        {% for row in rows %}
+            <tr class="h-12">
+                {% for header in headers %}
+                    <td class="px-4 py-2 whitespace-nowrap text-sm">
+                        {{ render_cell(get_nested_value(row, header.key)) }}
+                    </td>
+                {% endfor %}
+                {% if actions is defined %}
+                    <td class="px-4 py-2 whitespace-nowrap text-right text-sm font-medium flex justify-end items-center space-x-2">
+                        {% for action in actions %}
+{#                            {{ action.params|reduce((carry, param, key) => carry|merge({(key): get_nested_value(row, param)}), {})) }}#}
+                            <a href="{{ path(action.route, action.params|reduce((carry, param, key) => carry|merge({(key): get_nested_value(row, param).value}), {})) }}"
+                               class="{{ action.class|default('text-indigo-600 hover:text-indigo-900') }}">
+                                {{ ux_icon(action.icon, {size: 20, class: 'w-5 h-5'}) }}
+                            </a>
+
+                        {% endfor %}
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+

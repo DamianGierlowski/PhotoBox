@@ -1,0 +1,32 @@
+<div class="image-item">
+    <div class="group relative overflow-hidden bg-gray-200">
+        <div class="relative pb-[75%]">
+            <img
+                    src="{{ archive_public_url(image.thumbnail_url) }}"
+                    alt="{{ image.image_alt }}"
+                    class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+            >
+            <div class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <div class="absolute bottom-0 left-0 right-0 flex items-center justify-end gap-2 p-2 sm:p-4">
+                    <button
+                            onclick="showFullScreenImage('{{ image.image_url }}')"
+                            class="rounded-full bg-white/90 p-1.5 sm:p-2 text-gray-900 shadow-sm transition-colors hover:bg-white"
+                            title="View fullscreen"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 sm:w-[18px] sm:h-[18px]">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+                        </svg>
+                    </button>
+                    <button
+                            onclick="removeFromFavorites('{{ image.guid }}', '{{ image.gallery_guid }}', '{{ app.user.username }}')"
+                            class="rounded-full bg-white/90 p-1.5 sm:p-2 text-gray-900 shadow-sm transition-colors hover:bg-white"
+                            title="Download image"
+                    >
+                        {{ ux_icon('mdi:star', {size: 16, class: 'w-4 h-4 sm:w-[18px] sm:h-[18px]'}) }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

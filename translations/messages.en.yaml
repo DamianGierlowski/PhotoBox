@@ -1,0 +1,18 @@
+title: PhotoBox
+commission:
+  header_title: Commissions
+  new_title: Create new commission
+  show_title: Commission description
+  gallery_title: Commissions galleries
+  fields:
+    date: 'Commission Date'
+    description: 'Description'
+gallery:
+  new_title: Create new gallery
+  show_title: 'Gallery: %title%'
+  upload_title: 'Uploading files to %title%'
+header:
+  logout: 'Logout'
+sidebar:
+  dashboard: 'Dashboard'
+  commission: 'Commissions'

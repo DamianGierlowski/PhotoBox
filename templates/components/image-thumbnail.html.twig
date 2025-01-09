@@ -1,0 +1,90 @@
+<div class="group relative overflow-hidden bg-gray-200">
+    <div class="relative pb-[100%]"> {# 1:1 aspect ratio #}
+        <img
+                src="{{ archive_public_url(thumbnail_url) }}"
+                alt="{{ image_alt }}"
+                class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+        >
+        <div class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <div class="absolute bottom-0 left-0 right-0 flex items-center justify-end gap-2 p-2 sm:p-4">
+                <button
+                        onclick="showFullScreenImage('{{ image_url }}')"
+                        class="rounded-full bg-white/90 p-1.5 sm:p-2 text-gray-900 shadow-sm transition-colors hover:bg-white"
+                        title="View fullscreen"
+                >
+                    {{ ux_icon('mdi:eye', {size: 16, class: 'w-4 h-4 sm:w-[18px] sm:h-[18px]'}) }}
+                </button>
+                    <button
+                            onclick="addToFavorites('{{ guid }}', '{{ gallery_guid }}', 'test@test.pl')"
+                            class="rounded-full bg-white/90 p-1.5 sm:p-2 text-gray-900 shadow-sm transition-colors hover:bg-white"
+                            title="Download image"
+                    >
+                        {{ ux_icon('mdi:star', {size: 16, class: 'w-4 h-4 sm:w-[18px] sm:h-[18px]'}) }}
+                    </button>
+                {% if share_url is defined %}
+                    <button
+                            onclick="shareImage('{{ share_url }}')"
+                            class="rounded-full bg-white/90 p-1.5 sm:p-2 text-gray-900 shadow-sm transition-colors hover:bg-white"
+                            title="Share image"
+                    >
+{#                        {{ ux_icon('share', size: 16, class: 'w-4 h-4 sm:w-[18px] sm:h-[18px]') }}#}
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function showFullScreenImage(imageUrl) {
+        const fullScreenDiv = document.createElement('div');
+        fullScreenDiv.style.position = 'fixed';
+        fullScreenDiv.style.top = '0';
+        fullScreenDiv.style.left = '0';
+        fullScreenDiv.style.width = '100%';
+        fullScreenDiv.style.height = '100%';
+        fullScreenDiv.style.backgroundColor = 'rgba(0,0,0,0.9)';
+        fullScreenDiv.style.display = 'flex';
+        fullScreenDiv.style.alignItems = 'center';
+        fullScreenDiv.style.justifyContent = 'center';
+        fullScreenDiv.style.zIndex = '9999';
+
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.style.maxWidth = '90%';
+        img.style.maxHeight = '90%';
+        img.style.objectFit = 'contain';
+
+        fullScreenDiv.appendChild(img);
+
+        fullScreenDiv.addEventListener('click', () => {
+            document.body.removeChild(fullScreenDiv);
+        });
+
+        document.body.appendChild(fullScreenDiv);
+    }
+
+    function addToFavorites(fileGuid, galleryGuid, email) {
+        const bodyData = {
+            fileGuid: fileGuid,
+            galleryGuid: galleryGuid,
+            email: email,
+        };
+
+        console.log('Request Body:', bodyData);
+
+        $.ajax({
+            url: '/favorites/add',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(bodyData), // Properly stringify the object
+            success: function(response) {
+                console.log('Success:', response);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', xhr.responseText || status);
+            }
+        });
+    }
+</script>

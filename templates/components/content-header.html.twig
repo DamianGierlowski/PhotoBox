@@ -1,0 +1,24 @@
+<div class="bg-white shadow-sm rounded-lg mb-4 mx-4 my-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="py-4 flex items-center justify-between">
+            <div class="flex items-center">
+                {% if back_link is defined %}
+                    <a href="{{ path(back_link.route, back_link.params) }}" class="text-gray-500 hover:text-gray-700 mr-4">
+                        {{ ux_icon('mdi:arrow-left', {size: 24, class: 'w-6 h-6'}) }}
+                    </a>
+                {% endif %}
+                <h1 class="text-2xl font-semibold text-gray-900">{{ title }}</h1>
+            </div>
+            {% if buttons is defined %}
+                <div class="flex space-x-2">
+                    {% for button in buttons %}
+                        <a href="{{ path(button.route, button.params) }}" class="{{ button.class|default('bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-md') }}">
+                            {{ ux_icon(button.icon, {size: 20, class: 'w-5 h-5'}) }}
+                        </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+

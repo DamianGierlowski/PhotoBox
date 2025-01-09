@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ 'title'|trans }}{% endblock %}
+
+{% block body %}
+
+    {% include 'components/content-header.html.twig' with content_header %}
+    <div class="bg-white shadow rounded-lg p-4 sm:p-6 mb-4 mx-4 my-4">
+        <div class="space-y-4">
+            <div class="mb-8">
+                {% include 'components/content-table.html.twig' with table_data %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

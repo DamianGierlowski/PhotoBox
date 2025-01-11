@@ -22,9 +22,10 @@ class UploadService
     {
             /** @var array $files */
             $files = $form->get('files')->getData();
+            $watermark = $form->get('watermark')->getData();
 
             $keyBase = $gallery->getGuid();
-            $uplodedFiles = $this->fileService->uploadFiles($files, $keyBase);
+            $uplodedFiles = $this->fileService->uploadFiles($files, $keyBase, $watermark);
 
             foreach ($uplodedFiles as $file) {
                 $gallery->addFile($file);
@@ -45,6 +46,5 @@ class UploadService
         $this->entityManager->persist($gallery);
         $this->entityManager->flush();
     }
-
 
 }

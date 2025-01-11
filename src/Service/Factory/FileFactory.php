@@ -13,7 +13,7 @@ class FileFactory
     ) {
     }
 
-    public function makeNewFile(string $fileName, string $path, string $thumbnailPath , string $mimeType, int $size, string $guid): File
+    public function makeNewFile(string $fileName, string $path, string $thumbnailPath, string $mimeType, int $size, string $guid): File
     {
         $file = new File();
         $file->setName($fileName)

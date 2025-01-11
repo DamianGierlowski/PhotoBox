@@ -41,6 +41,9 @@ class File
     #[ORM\Column(length: 255)]
     private ?string $thumbnailPath = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $watermark_path = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -146,6 +149,18 @@ class File
     public function setThumbnailPath(string $thumbnailPath): static
     {
         $this->thumbnailPath = $thumbnailPath;
+
+        return $this;
+    }
+
+    public function getWatermarkPath(): ?string
+    {
+        return $this->watermark_path;
+    }
+
+    public function setWatermarkPath(?string $watermark_path): static
+    {
+        $this->watermark_path = $watermark_path;
 
         return $this;
     }

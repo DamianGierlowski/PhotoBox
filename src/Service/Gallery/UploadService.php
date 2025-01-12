@@ -4,7 +4,7 @@ namespace App\Service\Gallery;
 
 use App\Entity\File;
 use App\Entity\Gallery;
-use App\Repository\FileRepository;
+
 use App\Service\FileService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormInterface;
@@ -13,7 +13,6 @@ class UploadService
 
     public function __construct(
         private FileService $fileService,
-        private FileRepository $fileRepository,
         private EntityManagerInterface $entityManager,
     ) {
     }

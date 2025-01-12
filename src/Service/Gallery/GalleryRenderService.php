@@ -4,35 +4,87 @@ namespace App\Service\Gallery;
 
 use App\Entity\Commission;
 use App\Entity\Gallery;
+use App\Repository\CommissionRepository;
+use App\Repository\GalleryRepository;
 use App\Service\Factory\ComponentFactory;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class GalleryRenderService
 {
 
-    public function __construct(private ComponentFactory $componentFactory)
-    {
-
+    public function __construct(
+        private ComponentFactory $componentFactory,
+        private GalleryRepository $galleryRepository,
+    ) {
     }
-    public function getHeaderRenderDataForNew(Commission $commission): array
+
+
+    public function getHeaderRenderDataForIndex(): array
     {
         $builderHeader = $this->componentFactory->create(ComponentFactory::CONTENT_HEADER);
 
         $builderHeader
-            ->addTitle('gallery.new_title')
-            ->addBackLink('app_commission_show', ['guid' => $commission->getGuid()])
+            ->addTitle('gallery.index')
+            ->addButton('app_gallery_new', 'mono-icons:add')
         ;
 
         return $builderHeader->build();
     }
 
-    public function getHeaderRenderDataForEdit(Commission $commission): array
+    public function getTableRenderDataForIndex(UserInterface $user): array
+    {
+
+        $galleries = $this->galleryRepository->findBy(['commission' => null, 'createdBy' => $user]);
+
+        /* ThumbnailTableBuilder $builder */
+        $builder = $this->componentFactory->create(ComponentFactory::CONTENT_TABLE);
+
+        $builder->addHeader('name', 'Name');
+        $builder->addHeader('count', 'File count');
+        $builder->addHeader('public', 'public');
+
+        foreach ($galleries as $gallery) {
+            $guid = $gallery->getGuid();
+
+            $builder->addRowValue($guid, 'guid', $guid);
+            $builder->addRowValue($guid, 'name', $gallery->getName());
+            $builder->addRowValue($guid, 'count', count($gallery->getFiles()));
+            $builder->addRowValue($guid, 'public', $gallery->isPublic() ? 'Yes' :  'No', $gallery->isPublic() ? 'green' :  'red');
+        }
+
+        $builder->addAction('app_gallery_show', ['guid' => 'guid'], 'mdi:eye');
+
+        return $builder->build();
+    }
+
+    public function getHeaderRenderDataForNew(?string $guid): array
+    {
+        $builderHeader = $this->componentFactory->create(ComponentFactory::CONTENT_HEADER);
+
+        $builderHeader
+            ->addTitle('gallery.new_title')
+        ;
+
+        if (!empty($guid)) {
+            $builderHeader->addBackLink('app_commission_show', ['guid' => $guid]);
+        }
+
+        return $builderHeader->build();
+    }
+
+    public function getHeaderRenderDataForEdit(?Gallery $gallery): array
     {
         $builderHeader = $this->componentFactory->create(ComponentFactory::CONTENT_HEADER);
 
         $builderHeader
             ->addTitle('gallery.edit_title')
-            ->addBackLink('app_commission_show', ['guid' => $commission->getGuid()])
         ;
+
+        if (null === $gallery->getCommission()) {
+            $builderHeader->addBackLink('app_gallery_index');
+        } else {
+            $builderHeader->addBackLink('app_commission_show', ['guid' => $gallery->getCommission()->getGuid()]);
+        }
 
         return $builderHeader->build();
     }
@@ -43,10 +95,15 @@ class GalleryRenderService
 
         $builderHeader
             ->addTitle('gallery.show_title', ['%title%' => $gallery->getName()])
-            ->addBackLink('app_commission_show', ['guid' => $gallery->getCommission()->getGuid()])
             ->addButton('app_gallery_edit', 'mdi:pencil', ['guid'=> $gallery->getGuid()])
             ->addButton('app_gallery_upload', 'mdi:tray-upload', ['guid'=> $gallery->getGuid()])
         ;
+
+        if (null === $gallery->getCommission()) {
+            $builderHeader->addBackLink('app_gallery_index');
+        } else {
+            $builderHeader->addBackLink('app_commission_show', ['guid' => $gallery->getCommission()->getGuid()]);
+        }
 
         return $builderHeader->build();
     }

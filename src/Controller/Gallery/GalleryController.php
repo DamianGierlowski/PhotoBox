@@ -2,10 +2,10 @@
 
 namespace App\Controller\Gallery;
 
-use App\Entity\Commission;
 use App\Entity\Gallery;
 use App\Form\Gallery\UploadGalleryFilesType;
 use App\Form\GalleryType;
+use App\Repository\CommissionRepository;
 use App\Service\Gallery\GalleryRenderService;
 use App\Service\Gallery\GalleryService;
 use App\Service\Gallery\UploadService;
@@ -23,29 +23,48 @@ use Symfony\Component\Routing\Attribute\Route;
 final class GalleryController extends AbstractController
 {
 
-    #[Route('/new/{guid}', name: 'app_gallery_new', methods: ['GET', 'POST'])]
+    #[Route('/', name: 'app_gallery_index', methods: ['GET'])]
+    public function index(GalleryRenderService $galleryRenderService)
+    {
+        $user = $this->getUser();
+
+        return $this->render('gallery/index.html.twig', [
+            'content_header' => $galleryRenderService->getHeaderRenderDataForIndex(),
+            'table_data' => $galleryRenderService->getTableRenderDataForIndex($user),
+        ]);
+    }
+
+
+    #[Route('/new', name: 'app_gallery_new', methods: ['GET', 'POST'])]
     public function new(
         Request                $request,
-        #[MapEntity(mapping: ['guid' => 'guid'])]
-        Commission             $commission,
         EntityManagerInterface $entityManager,
-        GalleryRenderService $galleryRenderService,
-
+        GalleryRenderService   $galleryRenderService,
+        CommissionRepository $commissionRepository,
     ): Response {
         $gallery = new Gallery();
         $form = $this->createForm(GalleryType::class, $gallery);
         $form->handleRequest($request);
 
-        $contentHeaderData = $galleryRenderService->getHeaderRenderDataForNew($commission);
+        $commissionGuid = $request->get('guid') ?? null;
+
+        $contentHeaderData = $galleryRenderService->getHeaderRenderDataForNew($commissionGuid);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $gallery->setCommission($commission);
+
+            $commission = $commissionRepository->findOneBy(['guid' => $commissionGuid]);
             $gallery->setGuid(GuidFactory::generate());
+            $gallery->setCreatedBy($this->getUser());
+            $gallery->setCommission($commission);
 
             $entityManager->persist($gallery);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_commission_show', ['guid' => $commission->getGuid()], Response::HTTP_SEE_OTHER);
+            if (null === $commissionGuid) {
+                return $this->redirectToRoute('app_gallery_index');
+            }
+
+            return $this->redirectToRoute('app_commission_show', ['guid' => $commissionGuid], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('gallery/new.html.twig', [
@@ -58,7 +77,7 @@ final class GalleryController extends AbstractController
     #[Route('/{guid}', name: 'app_gallery_show', methods: ['GET'])]
     public function show(
         #[MapEntity(mapping: ['guid' => 'guid'])]
-        Gallery $gallery,
+        Gallery              $gallery,
         GalleryRenderService $galleryRenderService,
     ): Response
     {
@@ -91,7 +110,7 @@ final class GalleryController extends AbstractController
         }
 
         return $this->render('gallery/edit.html.twig', [
-            'content_header' => $galleryRenderService->getHeaderRenderDataForEdit($gallery->getCommission()),
+            'content_header' => $galleryRenderService->getHeaderRenderDataForEdit($gallery),
             'gallery' => $gallery,
             'form' => $form,
         ]);

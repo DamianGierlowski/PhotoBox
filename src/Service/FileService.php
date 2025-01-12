@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use Ajaxray\PHPWatermark\Watermark;
 use App\Entity\File;
 use App\Service\Factory\FileFactory;
 use App\Service\Files\WatermarkingService;
@@ -10,8 +9,6 @@ use App\Util\ArchiveClient;
 use App\Util\GuidFactory;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
-use PHPUnit\Exception;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 

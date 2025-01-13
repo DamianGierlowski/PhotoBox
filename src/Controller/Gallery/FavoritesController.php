@@ -15,6 +15,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class FavoritesController extends AbstractController
 {
 
+    #[IsGranted('ROLE_GUEST')]
     #[Route('/',name:'app_favorites_list')]
     public function list(Request $request, FavoritesService $favoritesService)
     {
@@ -44,8 +45,7 @@ class FavoritesController extends AbstractController
             return new JsonResponse(['message' => $exception->getMessage()], $exception->getCode());
         }
 
-
-        return new JsonResponse(['message' => "Succesfully added"]);
+        return new JsonResponse(['message' => "Successfully added"]);
     }
 
     #[IsGranted('ROLE_GUEST')]
@@ -58,7 +58,6 @@ class FavoritesController extends AbstractController
             return new JsonResponse(['message' => $exception->getMessage()], $exception->getCode());
         }
 
-
-        return new JsonResponse(['message' => "Succesfully removed"]);
+        return new JsonResponse(['message' => "Successfully removed"]);
     }
 }

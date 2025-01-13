@@ -18,7 +18,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+
+#[IsGranted('ROLE_USER')]
 #[Route('/gallery')]
 final class GalleryController extends AbstractController
 {
@@ -42,6 +45,7 @@ final class GalleryController extends AbstractController
         GalleryRenderService   $galleryRenderService,
         CommissionRepository $commissionRepository,
     ): Response {
+
         $gallery = new Gallery();
         $form = $this->createForm(GalleryType::class, $gallery);
         $form->handleRequest($request);
@@ -81,6 +85,8 @@ final class GalleryController extends AbstractController
         GalleryRenderService $galleryRenderService,
     ): Response
     {
+        $this->isGranted(PermissionInterface::OWNER, $gallery);
+
         return $this->render('gallery/show.html.twig', [
             'content_header' => $galleryRenderService->getHeaderRenderDataForShow($gallery),
             'thumbnail_table_data' => $galleryRenderService->getTableRenderDataForShow($gallery),
@@ -149,9 +155,14 @@ final class GalleryController extends AbstractController
     }
 
     #[Route('/upload/{guid}/process', name: 'app_gallery_upload_process', methods: ['POST'])]
-    public function process(Request $request, #[MapEntity(mapping: ['guid' => 'guid'])]
-    Gallery $gallery, UploadService $uploadService): JsonResponse
-    {
+    public function process(
+        Request $request,
+        #[MapEntity(mapping: ['guid' => 'guid'])]
+        Gallery $gallery,
+        UploadService $uploadService): JsonResponse {
+
+        $this->isGranted(PermissionInterface::OWNER, $gallery);
+
         $form = $this->createForm(UploadGalleryFilesType::class);
         $form->handleRequest($request);
 

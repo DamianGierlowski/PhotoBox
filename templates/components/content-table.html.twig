@@ -15,6 +15,7 @@
         </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
+        {% if rows is defined %}
         {% for row in rows %}
             <tr class="h-12">
                 {% for header in headers %}
@@ -36,6 +37,7 @@
                 {% endif %}
             </tr>
         {% endfor %}
+        {% endif %}
         </tbody>
     </table>
 </div>

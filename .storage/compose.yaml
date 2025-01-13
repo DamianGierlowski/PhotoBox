@@ -20,6 +20,8 @@ services:
     volumes:
       - data1-1:/data1
       - data1-2:/data2
+    networks:
+      - photobox
 
   minio2:
     <<: *minio-common
@@ -27,6 +29,8 @@ services:
     volumes:
       - data2-1:/data1
       - data2-2:/data2
+    networks:
+      - photobox
 
   minio3:
     <<: *minio-common
@@ -34,6 +38,8 @@ services:
     volumes:
       - data3-1:/data1
       - data3-2:/data2
+    networks:
+      - photobox
 
   minio4:
     <<: *minio-common
@@ -41,6 +47,8 @@ services:
     volumes:
       - data4-1:/data1
       - data4-2:/data2
+    networks:
+      - photobox
 
   nginx:
     image: nginx:1.19.2-alpine
@@ -55,6 +63,8 @@ services:
       - minio2
       - minio3
       - minio4
+    networks:
+      - photobox
 
 volumes:
   db_data:
@@ -66,3 +76,8 @@ volumes:
   data3-2:
   data4-1:
   data4-2:
+
+networks:
+  photobox:
+    name: photobox
+    external: true

@@ -47,7 +47,7 @@ final class CommissionController extends AbstractController
             $entityManager->persist($commission);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_assigment_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_commission_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('commission/new.html.twig', [

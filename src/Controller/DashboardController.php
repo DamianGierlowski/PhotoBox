@@ -10,7 +10,9 @@ use Symfony\Component\Routing\Attribute\Route;
 class DashboardController extends AbstractController
 {
 
-    public function __construct(private ComponentFactory $componentFactory)
+    public function __construct(
+        private ComponentFactory $componentFactory
+    )
     {
 
     }

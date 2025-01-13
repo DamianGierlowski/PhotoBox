@@ -18,7 +18,6 @@ class GalleryRenderService
     ) {
     }
 
-
     public function getHeaderRenderDataForIndex(): array
     {
         $builderHeader = $this->componentFactory->create(ComponentFactory::CONTENT_HEADER);

@@ -51,7 +51,6 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - photobox
-
 volumes:
   caddy_data:
   caddy_config:

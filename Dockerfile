@@ -36,6 +36,16 @@ RUN set -eux; \
 
 RUN install-php-extensions pdo_mysql
 
+# Install Node.js (with npm)
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y nodejs
+
+COPY ./assets/ /app/assets/
+
+COPY ./package.json ./webpack.config.js ./tailwind.config.js /app/
+# Build TailwindCSS assets using npm
+RUN npm install
+RUN npm run build
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -53,7 +63,6 @@ ENTRYPOINT ["docker-entrypoint"]
 
 HEALTHCHECK --start-period=60s CMD curl -f http://localhost:2019/metrics || exit 1
 CMD [ "frankenphp", "run", "--config", "/etc/caddy/Caddyfile" ]
-CMD [ "php", "bin/console", "tailwind:build"]
 
 # Dev FrankenPHP image
 FROM frankenphp_base AS frankenphp_dev

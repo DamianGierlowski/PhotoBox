@@ -44,6 +44,14 @@ class File
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $watermarkPath = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $createdBy = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -164,4 +172,27 @@ class File
 
         return $this;
     }
+
+    public function setCreatedBy(?User $createdBy): File
+    {
+        $this->createdBy = $createdBy;
+        return $this;
+    }
+
+    public function getCreatedAt(): ?DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    #[ORM\PrePersist]
+    public function setCreatedAt(): void
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
 }

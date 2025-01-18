@@ -9,6 +9,7 @@ use App\Util\ArchiveClient;
 use App\Util\GuidFactory;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 

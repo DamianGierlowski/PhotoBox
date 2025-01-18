@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\FileRepository;
 use App\Service\Factory\ComponentFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,16 +14,17 @@ class DashboardController extends AbstractController
 
     #[IsGranted("ROLE_USER")]
     #[Route('/dashboard', name: 'app_dashboard')]
-    public function index(): Response
+    public function index(
+        FileRepository $fileRepository,
+    ): Response
     {
         // Dummy data for demonstration
         $stats = [
             'active_commissions' => 12,
             'revenue' => '$5,230',
             'total_galleries' => 45,
-            'storage_used' => '2.3 GB / 10 GB',
+            'storage_used' => round($fileRepository->getTotalSize($this->getUser()) / 1024 , 2) . ' GB',
         ];
-
         $recentCommissions = [
             ['date' => '2023-05-15', 'name' => 'Wedding Photoshoot', 'status' => 'In Progress', 'income' => '$1,200'],
             ['date' => '2023-05-12', 'name' => 'Product Catalog', 'status' => 'Completed', 'income' => '$800'],

@@ -5,11 +5,13 @@ namespace App\Service\Factory;
 use App\Entity\File;
 use App\Util\GuidFactory;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class FileFactory
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private Security $security,
     ) {
     }
 
@@ -23,6 +25,7 @@ class FileFactory
             ->setGuid($guid)
             ->setThumbnailPath($thumbnailPath)
             ->setWatermarkPath($watermarkPath)
+            ->setCreatedBy($this->security->getUser())
         ;
 
         $this->entityManager->persist($file);

@@ -5,6 +5,60 @@
 {% block stylesheets %}
     {{ parent() }}
     <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 200px;
+            grid-gap: 8px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-item .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0);
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .gallery-item:hover .overlay {
+            background-color: rgba(0, 0, 0, 0.2);
+            opacity: 100;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-item.col-span-2 {
+            grid-column: span 2;
+        }
+
+        .gallery-item.row-span-2 {
+            grid-row: span 2;
+        }
+
         .image-container {
             width: 100%;
             max-width: 600px;
@@ -29,11 +83,18 @@
     </div>
 
     <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-8 text-center">Image Preview</h1>
-        <div id="image-stack" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1">
-            <!-- Images will be inserted here -->
+        <div id="image-stack" class="min-h-screen">
+            <!-- Gallery will be loaded here -->
         </div>
     </div>
+
+
+{#    <div class="container mx-auto px-4 py-8">#}
+{#        <h1 class="text-3xl font-bold mb-8 text-center">Image Preview</h1>#}
+{#        <div id="image-stack" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1">#}
+{#            <!-- Images will be inserted here -->#}
+{#        </div>#}
+{#    </div>#}
 
     {% if not is_granted('ROLE_GUEST') %}
     <!-- Login Modal -->
@@ -112,7 +173,7 @@
                     return response.json();
                 })
                 .then(renderedImages => {
-                    imageStack.innerHTML = renderedImages.join('');
+                    imageStack.innerHTML = renderedImages.html;
                 })
                 .catch(error => {
                     console.error('Error fetching images:', error);

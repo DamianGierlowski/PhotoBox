@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_USER')]
 #[Route('/preview')]
 class PreviewController extends AbstractController
 {
@@ -48,28 +47,80 @@ class PreviewController extends AbstractController
         foreach ($gallery->getFiles() as $file) {
             $imageThumbnails[] = [
                 'thumbnail_url' => $file->getThumbnailPath(),
-                'image_url' => $file->getPath(),
-                'image_alt' => $file->getName(),
-                'is_vertical' => false,
-                'cart_route' => 'app_dashboard',
-                'cart_params' => ['id' => 1],
-                'favorite_route' => 'app_dashboard',
-                'favorite_params' => ['id' => 1],
+                'image_url' => $file->getWatermarkPath() ?? $file->getPath(),
+                'alt' => $file->getName(),
                 'guid' => $file->getGuid(),
-                'gallery_guid' => $gallery->getGuid()
+                'gallery_guid' => $gallery->getGuid(),
+                'gridClass' => 'col-span-2 row-span-2',
             ];
         }
 
-        $renderedImages = [];
-        foreach ($imageThumbnails as $image) {
-            if (array_key_exists($image['guid'], $map)) {
-                continue;
-            }
+        $images = [
+            [
+                'image_url' => 'https://picsum.photos/400/300?random=1',
+                'thumbnail_url' => 'https://picsum.photos/400/300?random=1',
+                'alt' => 'Gallery Image 1',
+                'gridClass' => 'col-span-2 row-span-2',
+                'aspectRatio' => '4/3'
+            ],
+            [
+                'image_url' => 'https://picsum.photos/800/600?random=2',
+                'thumbnail_url' => 'https://picsum.photos/800/600?random=2',
+                'alt' => 'Gallery Image 2',
+                'gridClass' => 'col-span-2 row-span-2',
+                'aspectRatio' => '4/3'
+            ],
+            [
+                'image_url' => 'https://picsum.photos/400/300?random=3',
+                'thumbnail_url' => 'https://picsum.photos/400/300?random=3',
+                'alt' => 'Gallery Image 3',
+                'gridClass' => 'col-span-2 row-span-1',
+                'aspectRatio' => '4/3'
+            ],
+            [
+                'image_url' => 'https://picsum.photos/400/600?random=4',
+                'thumbnail_url' => 'https://picsum.photos/400/600?random=4',
+                'alt' => 'Gallery Image 4',
+                'gridClass' => 'row-span-2',
+                'aspectRatio' => '2/3'
+            ],
+            [
+                'image_url' => 'https://picsum.photos/400/300?random=5',
+                'thumbnail_url' => 'https://picsum.photos/400/300?random=5',
+                'alt' => 'Gallery Image 5',
+                'gridClass' => 'col-span-1 row-span-1',
+                'aspectRatio' => '4/3'
+            ],
+            [
+                'image_url' => 'https://picsum.photos/800/300?random=6',
+                'thumbnail_url' => 'https://picsum.photos/800/300?random=6',
+                'alt' => 'Gallery Image 6',
+                'gridClass' => 'col-span-1 row-span-1',
+                'aspectRatio' => '4/3'
+            ],[
+                'image_url' => 'https://picsum.photos/800/300?random=7',
+                'thumbnail_url' => 'https://picsum.photos/800/300?random=7',
+                'alt' => 'Gallery Image 6',
+                'gridClass' => 'col-span-1 row-span-1',
+                'aspectRatio' => '4/3'
+            ]
+        ];
 
-            $renderedImages[] = $this->renderView('components/item-image.html.twig', ['image' => $image]);
-        }
 
-        return $this->json($renderedImages);
+        return $this->json([
+            'html' => $this->renderView('components/gallery-grid.html.twig', ['images' => $imageThumbnails])
+        ]);
+
+//        $renderedImages = [];
+//        foreach ($imageThumbnails as $image) {
+//            if (array_key_exists($image['guid'], $map)) {
+//                continue;
+//            }
+//
+//            $renderedImages[] = $this->renderView('components/gallery_grid.html.twig', ['images' => $image]);
+//        }
+//
+//        return $this->json($renderedImages);
     }
 
 }

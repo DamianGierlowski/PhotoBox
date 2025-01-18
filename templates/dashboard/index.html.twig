@@ -3,27 +3,75 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block body %}
-    {% include 'components/content-header.html.twig' with content_header %}
+    <div class="container mx-auto px-4 py-8">
 
-{#    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">#}
-{#        <div class="grid grid-cols-1 gap-8">#}
-{#            <div>#}
-{#                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Products with Thumbnails</h2>#}
-{#                {% include 'components/thumbnail-table.html.twig' with thumbnail_table_data %}#}
-{#            </div>#}
-{#            <div>#}
-{#                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Flexible Color-coded Table</h2>#}
-{#                {% include 'components/content-table.html.twig' with table_data %}#}
-{#            </div>#}
-{#            <div>#}
-{#                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Image Thumbnails</h2>#}
-{#                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">#}
-{#                    {% for thumbnail in image_thumbnails %}#}
-{#                        {% include 'components/image-thumbnail.html.twig' with thumbnail %}#}
-{#                    {% endfor %}#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
+        <!-- Statistics Widgets -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {% for label, value in stats %}
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-lg font-light text-gray-600 mb-2">{{ label|replace({'_': ' '})|title }}</h2>
+                    <p class="text-3xl font-light text-gray-800">{{ value }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Recent Commissions -->
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-light text-gray-800">Recent Commissions</h2>
+                <a href="" class="text-blue-500 hover:text-blue-600 transition-colors duration-200">View All</a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                    <tr class="border-b border-gray-200">
+                        <th class="text-left py-3 px-4 font-light text-gray-600">Date</th>
+                        <th class="text-left py-3 px-4 font-light text-gray-600">Commission</th>
+                        <th class="text-left py-3 px-4 font-light text-gray-600">Status</th>
+                        <th class="text-left py-3 px-4 font-light text-gray-600">Est. Income</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for commission in recent_commissions %}
+                        <tr class="border-b border-gray-100">
+                            <td class="py-3 px-4">{{ commission.date }}</td>
+                            <td class="py-3 px-4">{{ commission.name }}</td>
+                            <td class="py-3 px-4">
+                                <span class="px-2 py-1 rounded-full text-xs
+                                    {% if commission.status == 'Completed' %}
+                                        bg-green-100 text-green-800
+                                    {% elseif commission.status == 'In Progress' %}
+                                        bg-blue-100 text-blue-800
+                                    {% else %}
+                                        bg-yellow-100 text-yellow-800
+                                    {% endif %}
+                                ">
+                                    {{ commission.status }}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">{{ commission.income }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Incoming Commissions -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-light text-gray-800">Incoming Commissions</h2>
+                <a href="" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors duration-200">Add New</a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {% for commission in incoming_commissions %}
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h3 class="text-lg font-light text-gray-800 mb-2">{{ commission.name }}</h3>
+                        <p class="text-sm text-gray-600">{{ commission.date }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
 

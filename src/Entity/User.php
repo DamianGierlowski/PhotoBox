@@ -42,11 +42,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Commission>
      */
     #[ORM\OneToMany(targetEntity: Commission::class, mappedBy: 'user')]
-    private Collection $assigments;
+    private Collection $commission;
 
     public function __construct()
     {
-        $this->assigments = new ArrayCollection();
+        $this->commission = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -147,27 +147,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Commission>
      */
-    public function getAssigments(): Collection
+    public function getCommission(): Collection
     {
-        return $this->assigments;
+        return $this->commission;
     }
 
-    public function addAssigment(Commission $assigment): static
+    public function addCommission(Commission $commission): static
     {
-        if (!$this->assigments->contains($assigment)) {
-            $this->assigments->add($assigment);
-            $assigment->setUser($this);
+        if (!$this->commission->contains($commission)) {
+            $this->commission->add($commission);
+            $commission->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeAssigment(Commission $assigment): static
+    public function removeCommission(Commission $commission): static
     {
-        if ($this->assigments->removeElement($assigment)) {
+        if ($this->commission->removeElement($commission)) {
             // set the owning side to null (unless already changed)
-            if ($assigment->getUser() === $this) {
-                $assigment->setUser(null);
+            if ($commission->getUser() === $this) {
+                $commission->setUser(null);
             }
         }
 

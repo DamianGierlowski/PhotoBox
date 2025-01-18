@@ -32,7 +32,7 @@ class FileRepository extends ServiceEntityRepository
             ->setParameter('deleted', false)
             ->setParameter('userEmail', $user->getUserIdentifier());
 
-        return (int) $queryBuilder->getQuery()->getSingleScalarResult();
+        return (float) $queryBuilder->getQuery()->getSingleScalarResult();
     }
 
 }

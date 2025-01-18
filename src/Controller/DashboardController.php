@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\FileRepository;
+use App\Service\Dashboard\WidgetService;
 use App\Service\Factory\ComponentFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,15 +17,17 @@ class DashboardController extends AbstractController
     #[Route('/dashboard', name: 'app_dashboard')]
     public function index(
         FileRepository $fileRepository,
+        WidgetService $widgetService
     ): Response
     {
         // Dummy data for demonstration
         $stats = [
-            'active_commissions' => 12,
-            'revenue' => '$5,230',
-            'total_galleries' => 45,
-            'storage_used' => round($fileRepository->getTotalSize($this->getUser()) / 1024 , 2) . ' GB',
+            'active_commissions' => $widgetService->getActiveCommissionWidgetData($this->getUser()),
+            'revenue' => '',
+            'total_galleries' => $widgetService->getActiveGalleryWidgetData($this->getUser()),
+            'storage_used' => $widgetService->getStorageWidgetData($this->getUser()) .' GB'
         ];
+
         $recentCommissions = [
             ['date' => '2023-05-15', 'name' => 'Wedding Photoshoot', 'status' => 'In Progress', 'income' => '$1,200'],
             ['date' => '2023-05-12', 'name' => 'Product Catalog', 'status' => 'Completed', 'income' => '$800'],

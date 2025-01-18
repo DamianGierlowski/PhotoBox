@@ -13,7 +13,7 @@ class FileFactory
     ) {
     }
 
-    public function makeNewFile(string $fileName, string $path, string $thumbnailPath, string $mimeType, int $size, string $guid): File
+    public function makeNewFile(string $fileName, string $path, string $thumbnailPath, string $mimeType, int $size, string $guid, ?string $watermarkPath): File
     {
         $file = new File();
         $file->setName($fileName)
@@ -22,6 +22,7 @@ class FileFactory
             ->setSize($size)
             ->setGuid($guid)
             ->setThumbnailPath($thumbnailPath)
+            ->setWatermarkPath($watermarkPath)
         ;
 
         $this->entityManager->persist($file);

@@ -43,9 +43,12 @@ class FileService
         $fileContent = file_get_contents($file->getPathname());
         $thumbnailPath = '/var/tmp/' . $file->getClientOriginalPath();
         $fileThumbnailWatermarkedContent = '';
+        $guid = GuidFactory::generate();
+
         if ($watermark) {
             $this->watermarkingService->addWatermark($file->getPathname(), 'Preview', $file->getPathname().'_watermarked');
             $fileThumbnailWatermarkedContent =  file_get_contents($file->getPathname().'_watermarked');
+            $keyWatermarked = $keyBase . '/' . self::WATERMARK_CATALOG . '/' . $guid;
         }
 
         $fileThumbnailContent = $this->createThumbnail($fileContent, $thumbnailPath, 800, 800);
@@ -54,9 +57,8 @@ class FileService
         $guid = GuidFactory::generate();
         $keyOriginal = $keyBase . '/' . self::ORIGINAL_CATALOG . '/' . $guid;
         $keyThumbnail = $keyBase . '/' . self::THUMBNAIL_CATALOG . '/' . $guid;
-        $keyWatermarked = $keyBase . '/' . self::WATERMARK_CATALOG . '/' . $guid;
 
-        $file = $this->fileFactory->makeNewFile($file->getClientOriginalPath(), $keyOriginal, $keyThumbnail, $fileMimeType, $file->getSize(), $guid);
+        $file = $this->fileFactory->makeNewFile($file->getClientOriginalPath(), $keyOriginal, $keyThumbnail, $fileMimeType, $file->getSize(), $guid, $keyWatermarked ?? null);
 
         try {
             $this->archiveClient->uploadFile($keyOriginal, $fileContent, $fileMimeType);

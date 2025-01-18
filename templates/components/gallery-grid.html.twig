@@ -1,13 +1,14 @@
-<div class="image-item">
-    <div class="group relative overflow-hidden bg-gray-200">
-        <div class="relative pb-[75%]">
+<div class="gallery-grid mb-8">
+    {% for image in images %}
+        <div class="gallery-item {{ image.gridClass }}">
             <img
-                    src="{{ archive_public_url(image.thumbnail_url) }}"
-                    alt="{{ image.image_alt }}"
-                    class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    src="{{ archive_public_url(image.image_url) }}"
+                    alt="{{ image.alt }}"
+                    class="w-full h-full object-cover rounded-lg"
+                    loading="lazy"
             >
-            <div class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <div class="absolute bottom-0 left-0 right-0 flex items-center justify-end gap-2 p-2 sm:p-4">
+            <div class="overlay">
+                <div class=" absolute bottom-0 left-0 right-0 flex items-center justify-end gap-2 p-2 sm:p-4 ">
                     <button
                             onclick="showFullScreenImage('{{ archive_public_url(image.image_url) }}')"
                             class="rounded-full bg-white/90 p-1.5 sm:p-2 text-gray-900 shadow-sm transition-colors hover:bg-white"
@@ -27,6 +28,6 @@
                 </div>
             </div>
         </div>
-    </div>
+    {% endfor %}
 </div>
 

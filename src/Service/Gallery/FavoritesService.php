@@ -55,7 +55,7 @@ class FavoritesService
         foreach ($favorites as $favorite) {
             $imageThumbnails[] = [
                 'thumbnail_url' => $favorite->getFile()->getThumbnailPath(),
-                'image_url' => $favorite->getFile()->getPath(),
+                'image_url' => $favorite->getFile()->getWatermarkPath() ?? $favorite->getFile()->getPath(),
                 'image_alt' => $favorite->getFile()->getName(),
                 'is_vertical' => false,
                 'cart_route' => 'app_dashboard',

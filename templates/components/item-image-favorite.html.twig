@@ -9,7 +9,7 @@
             <div class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                 <div class="absolute bottom-0 left-0 right-0 flex items-center justify-end gap-2 p-2 sm:p-4">
                     <button
-                            onclick="showFullScreenImage('{{ image.image_url }}')"
+                            onclick="showFullScreenImage('{{ archive_public_url(image.image_url) }}')"
                             class="rounded-full bg-white/90 p-1.5 sm:p-2 text-gray-900 shadow-sm transition-colors hover:bg-white"
                             title="View fullscreen"
                     >

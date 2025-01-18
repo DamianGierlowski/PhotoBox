@@ -8,6 +8,7 @@ commission:
     date: 'Commission Date'
     description: 'Description'
 gallery:
+  index: Gallery
   new_title: Create new gallery
   show_title: 'Gallery: %title%'
   upload_title: 'Uploading files to %title%'

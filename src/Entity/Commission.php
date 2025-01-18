@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use App\Enum\CommissionStatusEnum;
 use App\Repository\CommissionRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -37,6 +39,19 @@ class Commission
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $estimatedIncome = null;
+
+    #[ORM\Column(type: 'string', enumType: CommissionStatusEnum::class)]
+    private CommissionStatusEnum $status;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
+
 
     public function __construct()
     {
@@ -136,5 +151,50 @@ class Commission
         $this->description = $description;
 
         return $this;
+    }
+
+    public function getEstimatedIncome(): ?float
+    {
+        return $this->estimatedIncome;
+    }
+
+    public function setEstimatedIncome(?float $estimatedIncome): static
+    {
+        $this->estimatedIncome = $estimatedIncome;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): ?DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+    #[ORM\PrePersist]
+    public function setCreatedAt(): void
+    {
+        $this->createdAt = new DateTimeImmutable();
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function setUpdatedAt(): void
+    {
+        $this->updatedAt = new DateTimeImmutable();
+    }
+
+    public function setStatus(CommissionStatusEnum $status): Commission
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    public function getStatus(): CommissionStatusEnum
+    {
+        return $this->status;
     }
 }

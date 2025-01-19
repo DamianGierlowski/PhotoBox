@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Commission;
 
+use App\Form\Commission\CommissionSearchType;
 use App\Form\CommissionType;
+use App\Repository\CommissionRepository;
 use App\Repository\GalleryRepository;
 use App\Service\Commission\CommissionRenderService;
 use App\UniqueNameInterface\PermissionInterface;
@@ -12,6 +14,7 @@ use App\Util\GuidFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -25,12 +28,10 @@ final class CommissionController extends AbstractController
     #[Route(name: 'app_commission_index', methods: ['GET'])]
     public function index(CommissionRenderService $commissionRenderService): Response
     {
-        $contentHeaderData = $commissionRenderService->getHeaderRenderDataForIndex();
-        $tableData = $commissionRenderService->getTableRenderDataForIndex($this->getUser());
+        $form = $this->createForm(CommissionSearchType::class);
 
         return $this->render('commission/index.html.twig', [
-            'content_header' => $contentHeaderData,
-            'table_data' => $tableData
+            'form' => $form->createView(),
         ]);
     }
 

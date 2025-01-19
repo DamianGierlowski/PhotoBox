@@ -26,12 +26,10 @@
                 {% if actions is defined %}
                     <td class="px-4 py-2 whitespace-nowrap text-right text-sm font-medium flex justify-end items-center space-x-2">
                         {% for action in actions %}
-{#                            {{ action.params|reduce((carry, param, key) => carry|merge({(key): get_nested_value(row, param)}), {})) }}#}
                             <a href="{{ path(action.route, action.params|reduce((carry, param, key) => carry|merge({(key): get_nested_value(row, param).value}), {})) }}"
                                class="{{ action.class|default('text-indigo-600 hover:text-indigo-900') }}">
                                 {{ ux_icon(action.icon, {size: 20, class: 'w-5 h-5'}) }}
                             </a>
-
                         {% endfor %}
                     </td>
                 {% endif %}

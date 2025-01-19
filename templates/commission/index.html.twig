@@ -1,16 +1,149 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} {{ 'title'|trans }}{% endblock %}
+{% block title %}Commissions{% endblock %}
 
 {% block body %}
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-light mb-8 text-gray-800">Commissions</h1>
 
-    {% include 'components/content-header.html.twig' with content_header %}
-    <div class="bg-white shadow rounded-lg p-4 sm:p-6 mb-4 mx-4 my-4">
-        <div class="space-y-4">
-            <div class="mb-8">
-                {% include 'components/content-table.html.twig' with table_data %}
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+            {{ form_start(form, {'attr': {'id': 'commission-search-form', 'class': 'flex flex-wrap items-end gap-4'}}) }}
+            <div class="flex-grow">
+                {{ form_row(form.title, {'label': false}) }}
+            </div>
+            <div class="w-48">
+                {{ form_row(form.date, {'label': false}) }}
+            </div>
+            {{ form_end(form) }}
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-light text-gray-800">Commission List</h2>
+                <a href="" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors duration-200">
+                    Add New Commission
+                </a>
+            </div>
+
+            <div id="commission-list" class="bg-white rounded-lg shadow-sm overflow-hidden">
+                <!-- Commission list will be dynamically inserted here -->
             </div>
         </div>
-    </div>
 
+    </div>
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('commission-search-form');
+            const titleInput = document.getElementById('{{ form.title.vars.id }}');
+            const dateInput = document.getElementById('{{ form.date.vars.id }}');
+            const commissionList = document.getElementById('commission-list');
+
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+
+            function updateCommissionList() {
+                const title = titleInput.value;
+                const date = dateInput.value;
+
+                fetch(`{{ path('app_api_commission_search') }}?title=${encodeURIComponent(title)}&date=${encodeURIComponent(date)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        commissionList.innerHTML = generateCommissionTable(data.commissions);
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+
+            function formatDate(dateInput) {
+                const date = new Date(dateInput);
+                if (isNaN(date)) {
+                    return 'Invalid Date'; // Fallback for invalid dates
+                }
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}-${month}-${year}`;
+            }
+
+            function generateCommissionTable(commissions) {
+                if (commissions.length === 0) {
+                    return '<p class="p-4 text-gray-600">No commissions found.</p>';
+                }
+
+                let tableHtml = `
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-200">
+                        <th class="text-left py-3 px-4 font-light text-gray-600">Title</th>
+                        <th class="text-left py-3 px-4 font-light text-gray-600">Date</th>
+                        <th class="text-left py-3 px-4 font-light text-gray-600">Status</th>
+                        <th class="text-left py-3 px-4 font-light text-gray-600">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+                commissions.forEach(commission => {
+                    let statusClass = '';
+                    switch (commission.status) {
+                        case 'Completed':
+                            statusClass = 'bg-green-100 text-green-800';
+                            break;
+                        case 'In Progress':
+                            statusClass = 'bg-blue-100 text-blue-800';
+                            break;
+                        default:
+                            statusClass = 'bg-yellow-100 text-yellow-800';
+                    }
+
+                    const formattedDate = formatDate(commission.date);
+
+                    tableHtml += `
+                <tr class="border-b border-gray-100">
+                    <td class="py-3 px-4">${commission.title}</td>
+                    <td class="py-3 px-4">${formattedDate}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2 py-1 rounded-full text-xs ${statusClass}">
+                            ${commission.status}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4">
+                        <a href="commission/${commission.guid}/edit" class="text-blue-500 hover:text-blue-600 mr-2">Edit</a>
+                        <a href="commission/${commission.guid}" class="text-green-500 hover:text-green-600">View</a>
+                    </td>
+                </tr>
+            `;
+                });
+
+                tableHtml += `
+                </tbody>
+            </table>
+        `;
+
+                return tableHtml;
+            }
+
+            const debouncedUpdate = debounce(updateCommissionList, 300);
+
+            titleInput.addEventListener('input', debouncedUpdate);
+            dateInput.addEventListener('change', debouncedUpdate);
+
+            // Initial load
+            updateCommissionList();
+        });
+    </script>
+{% endblock %}
+

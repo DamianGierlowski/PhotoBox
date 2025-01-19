@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Dashboard;
+namespace App\Command;
 
 use App\Repository\CommissionRepository;
 use App\Repository\FileRepository;
@@ -30,5 +30,15 @@ class WidgetService
     public function getActiveGalleryWidgetData(UserInterface $user): int
     {
         return $this->galleryRepository->getTotalActiveGalleryForUser($user);
+    }
+
+    public function getRecentCommissions(UserInterface $user): array
+    {
+        return $this->commissionRepository->findRecentCommissionsForUser($user);
+    }
+
+    public function getIncomingCommissions(UserInterface $user): array
+    {
+        return $this->commissionRepository->findIncomingCommissionsForUser($user, 4);
     }
 }

@@ -2,9 +2,8 @@
 
 namespace App\Controller;
 
+use App\Command\WidgetService;
 use App\Repository\FileRepository;
-use App\Service\Dashboard\WidgetService;
-use App\Service\Factory\ComponentFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -16,31 +15,17 @@ class DashboardController extends AbstractController
     #[IsGranted("ROLE_USER")]
     #[Route('/dashboard', name: 'app_dashboard')]
     public function index(
-        FileRepository $fileRepository,
         WidgetService $widgetService
     ): Response
     {
-        // Dummy data for demonstration
         $stats = [
             'active_commissions' => $widgetService->getActiveCommissionWidgetData($this->getUser()),
-            'revenue' => '',
+//            'revenue' => '', //TODO when commissions ready
             'total_galleries' => $widgetService->getActiveGalleryWidgetData($this->getUser()),
-            'storage_used' => $widgetService->getStorageWidgetData($this->getUser()) .' GB'
+            'storage_used' => $widgetService->getStorageWidgetData($this->getUser()) .' GB',
         ];
-
-        $recentCommissions = [
-            ['date' => '2023-05-15', 'name' => 'Wedding Photoshoot', 'status' => 'In Progress', 'income' => '$1,200'],
-            ['date' => '2023-05-12', 'name' => 'Product Catalog', 'status' => 'Completed', 'income' => '$800'],
-            ['date' => '2023-05-10', 'name' => 'Family Portrait', 'status' => 'Pending', 'income' => '$350'],
-            ['date' => '2023-05-08', 'name' => 'Corporate Event', 'status' => 'In Progress', 'income' => '$2,000'],
-        ];
-
-        $incomingCommissions = [
-            ['name' => 'Beach Wedding', 'date' => '2023-06-01'],
-            ['name' => 'Fashion Show', 'date' => '2023-06-05'],
-            ['name' => 'Real Estate Listing', 'date' => '2023-06-10'],
-            ['name' => 'Graduation Ceremony', 'date' => '2023-06-15'],
-        ];
+        $recentCommissions = $widgetService->getRecentCommissions($this->getUser());
+        $incomingCommissions = $widgetService->getIncomingCommissions($this->getUser());
 
         return $this->render('dashboard/index.html.twig', [
             'stats' => $stats,

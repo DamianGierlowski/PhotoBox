@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Interface\CommissionInterface;
 use App\Enum\CommissionStatusEnum;
 use App\Repository\CommissionRepository;
 use DateTimeImmutable;
@@ -9,9 +10,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Ignore;
+use Symfony\Component\Serializer\Attribute\MaxDepth;
 
 #[ORM\Entity(repositoryClass: CommissionRepository::class)]
-class Commission
+class Commission implements CommissionInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -24,6 +27,7 @@ class Commission
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
+
     #[ORM\ManyToOne(inversedBy: 'commission')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
@@ -31,6 +35,7 @@ class Commission
     /**
      * @var Collection<int, Gallery>
      */
+    #[Ignore]
     #[ORM\OneToMany(targetEntity: Gallery::class, mappedBy: 'commission')]
     private Collection $galleries;
 
